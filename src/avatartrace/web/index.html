@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>avatartrace</title>
+<style>
+  :root {
+    --bg: #f6f7f9; --panel: #fff; --ink: #1b1f24; --muted: #5d6673; --line: #dfe3e8; --accent: #1f5fbf;
+    --exact: #0b6b3a; --near: #1f6f8b; --face: #6a4bb3; --weak: #96650a; --unv: #5d6673; --warn: #fff6dc; --bad: #b3261e;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #14171b; --panel: #1d2127; --ink: #e7eaee; --muted: #9aa4b1; --line: #313842; --accent: #7fb0ff;
+      --exact: #5fd399; --near: #6cc4e0; --face: #b9a3f2; --weak: #e6b450; --unv: #9aa4b1; --warn: #3a3114; --bad: #ff8a80;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 1040px; margin: 0 auto; padding: 24px 16px 56px; }
+  h1 { font-size: 22px; margin: 0; } h2 { font-size: 17px; margin: 28px 0 10px; }
+  .muted { color: var(--muted); } .hidden { display: none !important; }
+  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 16px; margin-top: 16px; }
+  #drop { border: 2px dashed var(--line); border-radius: 10px; padding: 28px 16px; text-align: center; cursor: pointer; }
+  #drop.over, #drop:focus-visible { border-color: var(--accent); outline: none; }
+  #preview { max-width: 120px; max-height: 120px; border-radius: 8px; margin-top: 10px; }
+  .row { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; margin-top: 12px; }
+  input[type=text], input[type=url], input[type=number] { font: inherit; padding: 6px 8px; border: 1px solid var(--line);
+    border-radius: 6px; background: var(--bg); color: var(--ink); min-width: 0; }
+  input[type=url] { flex: 1 1 280px; } input[type=number] { width: 80px; }
+  button { font: inherit; font-weight: 600; padding: 9px 18px; border-radius: 8px; border: 0; background: var(--accent); color: #fff; cursor: pointer; }
+  button:disabled { opacity: .5; cursor: default; }
+  .notice { background: var(--warn); border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px; margin-top: 12px; }
+  .error { color: var(--bad); font-weight: 600; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px; margin: 10px 0;
+          display: grid; grid-template-columns: auto 1fr auto; gap: 16px; align-items: center; }
+  .pair { display: flex; gap: 8px; align-items: center; }
+  .pair img { width: 84px; height: 84px; border-radius: 8px; object-fit: cover; background: var(--line); }
+  .who { min-width: 0; overflow-wrap: anywhere; } .who .name { font-weight: 600; font-size: 16px; }
+  .score { text-align: right; white-space: nowrap; } .score .pct { font-size: 24px; font-weight: 650; font-variant-numeric: tabular-nums; }
+  .badge { display: inline-block; font-size: 12px; font-weight: 650; padding: 2px 8px; border-radius: 999px; border: 1px solid currentColor; }
+  .l-EXACT { color: var(--exact); } .l-NEAR-DUPLICATE { color: var(--near); } .l-LIKELY-SAME-FACE { color: var(--face); }
+  .l-WEAK { color: var(--weak); } .l-UNVERIFIED { color: var(--unv); }
+  table { width: 100%; border-collapse: collapse; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; }
+  th, td { text-align: left; padding: 8px 10px; border-top: 1px solid var(--line); vertical-align: top; overflow-wrap: anywhere; }
+  th { border-top: 0; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+  a { color: var(--accent); }
+  @media (max-width: 640px) { .card { grid-template-columns: 1fr; } .score { text-align: left; } }
+</style>
+</head>
+<body>
+<main>
+  <h1>avatartrace <span class="muted" style="font-size:13px;font-weight:400">__VERSION__ · local only</span></h1>
+  <p class="muted">Find the accounts that use the same profile picture. Matches are leads, not proof. Do not use this
+     to stalk, harass or identify strangers.</p>
+
+  <form id="form" class="panel" novalidate>
+    <div id="drop" tabindex="0" role="button" aria-label="Choose a photo">
+      <strong>Drop a profile picture here</strong> or click to choose a file
+      <div><img id="preview" class="hidden" alt="Selected photo"></div>
+      <div id="filename" class="muted"></div>
+    </div>
+    <input id="file" type="file" accept="image/*" class="hidden">
+    <div class="row">
+      <label for="url">or a public photo URL</label>
+      <input id="url" type="url" placeholder="https://…" autocomplete="off">
+    </div>
+    <div class="row">
+      <label><input id="expand" type="checkbox"> Also try verified usernames on 50+ other sites</label>
+      <label><input id="face" type="checkbox" checked> Face matching</label>
+      <label><input id="clip" type="checkbox"> CLIP similarity (non-face pictures)</label>
+      <label>Minimum confidence <input id="min" type="number" min="0" max="100" value="80"></label>
+    </div>
+    <div id="consentBox" class="notice hidden">
+      <strong>This scan will send your photo outside this machine:</strong>
+      <ul id="uploads"></ul>
+      <label><input id="consent" type="checkbox"> I understand, send the photo to these services</label>
+      <div class="muted">Leave unticked to keep the photo on this machine (search providers are then skipped).</div>
+    </div>
+    <div class="row">
+      <button id="go" type="submit">Scan</button>
+      <span id="status" class="muted" role="status"></span>
+    </div>
+  </form>
+
+  <section id="results" class="hidden">
+    <h2 id="matchTitle">Matches</h2>
+    <div id="matches"></div>
+    <p id="hidden" class="muted"></p>
+    <div id="unverifiedBox" class="hidden">
+      <h2 id="unvTitle">Unverified</h2>
+      <p class="muted">Returned by a search provider, but the current profile picture could not be fetched without logging in. No score exists.</p>
+      <table><thead><tr><th>Platform</th><th>Username</th><th>Profile URL</th><th>Found via</th><th>Why unverified</th></tr></thead><tbody id="unverified"></tbody></table>
+    </div>
+    <div id="manualBox" class="hidden">
+      <h2>Search by hand</h2>
+      <p class="muted">No search provider ran. Opening one of these sends the photo (or its URL) to that search engine.</p>
+      <ul id="manual"></ul>
+    </div>
+    <div id="notesBox" class="hidden"><h2>Notes</h2><ul id="notes"></ul></div>
+    <p><a id="dlHtml" href="#">Download HTML report</a> · <a id="dlCsv" href="#">Download CSV</a></p>
+  </section>
+</main>
+<script>
+"use strict";
+const TOKEN = "__TOKEN__";
+const $ = (id) => document.getElementById(id);
+let chosen = null;
+
+function el(tag, text, cls) {
+  const node = document.createElement(tag);
+  if (text !== undefined && text !== null) node.textContent = String(text);
+  if (cls) node.className = cls;
+  return node;
+}
+function link(url, text) {
+  const ok = typeof url === "string" && /^https?:\/\//i.test(url);
+  if (!ok) return el("span", text);
+  const a = el("a", text);
+  a.href = url; a.target = "_blank"; a.rel = "noopener noreferrer nofollow"; a.referrerPolicy = "no-referrer";
+  return a;
+}
+function img(src, alt) {
+  const node = document.createElement("img");
+  if (typeof src === "string" && src.startsWith("data:image/")) node.src = src;
+  node.alt = alt;
+  return node;
+}
+async function post(path, form) {
+  const response = await fetch(path, { method: "POST", body: form, headers: { "X-AvatarTrace-Token": TOKEN } });
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    const detail = Array.isArray(data.detail) ? data.detail.map((d) => d.msg).join("; ") : data.detail;
+    throw new Error(detail || ("request failed (" + response.status + ")"));
+  }
+  return data;
+}
+async function refreshPlan() {
+  const form = new FormData();
+  form.append("has_url", $("url").value.trim() ? "true" : "false");
+  try {
+    const data = await post("/api/plan", form);
+    const list = $("uploads");
+    list.replaceChildren(...data.uploads.map((text) => el("li", text)));
+    $("consentBox").classList.toggle("hidden", data.uploads.length === 0);
+    if (data.uploads.length === 0) $("consent").checked = false;
+  } catch (error) { $("status").textContent = error.message; }
+}
+function choose(file) {
+  if (!file) return;
+  chosen = file;
+  $("filename").textContent = file.name;
+  const preview = $("preview");
+  preview.src = URL.createObjectURL(file);
+  preview.classList.remove("hidden");
+  $("url").value = "";
+  refreshPlan();
+}
+const drop = $("drop");
+drop.addEventListener("click", () => $("file").click());
+drop.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); $("file").click(); } });
+$("file").addEventListener("change", (e) => choose(e.target.files[0]));
+["dragenter", "dragover"].forEach((n) => drop.addEventListener(n, (e) => { e.preventDefault(); drop.classList.add("over"); }));
+["dragleave", "drop"].forEach((n) => drop.addEventListener(n, (e) => { e.preventDefault(); drop.classList.remove("over"); }));
+drop.addEventListener("drop", (e) => choose(e.dataTransfer.files[0]));
+$("url").addEventListener("change", () => { if ($("url").value.trim()) { chosen = null; $("filename").textContent = ""; $("preview").classList.add("hidden"); } refreshPlan(); });
+
+function card(row, queryThumb) {
+  const box = el("div", null, "card");
+  const pair = el("div", null, "pair");
+  pair.append(img(queryThumb, "Uploaded photo"), el("span", "↔", "muted"), img(row.avatar_thumb, "Profile picture"));
+  const who = el("div", null, "who");
+  who.append(el("div", row.platform_name + " · " + row.display, "name"));
+  const urlLine = el("div"); urlLine.append(link(row.profile_url, row.profile_url)); who.append(urlLine);
+  who.append(el("div", "Found via " + row.found_via.join(", ") + (row.method ? " · decided by " + row.method : ""), "muted"));
+  const score = el("div", null, "score");
+  score.append(el("div", row.confidence === null ? "n/a" : Math.round(row.confidence) + "%", "pct"));
+  score.append(el("span", row.label, "badge l-" + row.label.replace(/ /g, "-")));
+  box.append(pair, who, score);
+  return box;
+}
+function render(data) {
+  $("results").classList.remove("hidden");
+  $("matchTitle").textContent = "Matches (" + data.matches.length + ")";
+  const matches = $("matches");
+  matches.replaceChildren(...data.matches.map((row) => card(row, data.query.thumb)));
+  if (data.matches.length === 0) matches.append(el("p", "No account's profile picture matched at " + data.min_confidence + "% confidence or above.", "muted"));
+  $("hidden").textContent = data.below_min_confidence.length ? data.below_min_confidence.length + " weaker result(s) fell below the minimum confidence." : "";
+  $("unverifiedBox").classList.toggle("hidden", data.unverified.length === 0);
+  $("unvTitle").textContent = "Unverified (" + data.unverified.length + ")";
+  $("unverified").replaceChildren(...data.unverified.map((row) => {
+    const tr = el("tr");
+    const urlCell = el("td"); urlCell.append(link(row.profile_url, row.profile_url));
+    tr.append(el("td", row.platform_name), el("td", row.display), urlCell, el("td", row.found_via.join(", ")), el("td", row.reason || ""));
+    return tr;
+  }));
+  const ran = data.providers.some((p) => p.status === "ok");
+  $("manualBox").classList.toggle("hidden", ran);
+  $("manual").replaceChildren(...data.manual_search_links.map((item) => { const li = el("li"); li.append(link(item.url, item.name)); return li; }));
+  const notes = data.providers.filter((p) => p.status !== "ok").map((p) => p.name + ": " + p.status + ": " + (p.message || "")).concat(data.warnings);
+  $("notesBox").classList.toggle("hidden", notes.length === 0);
+  $("notes").replaceChildren(...notes.map((text) => el("li", text)));
+  $("dlHtml").href = "/api/report.html?token_query=" + encodeURIComponent(TOKEN);
+  $("dlCsv").href = "/api/report.csv?token_query=" + encodeURIComponent(TOKEN);
+}
+$("form").addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const url = $("url").value.trim();
+  const status = $("status");
+  status.className = "muted";
+  if (!chosen && !url) { status.textContent = "Choose a photo or enter a photo URL first."; status.className = "error"; return; }
+  const form = new FormData();
+  if (chosen) form.append("photo", chosen, chosen.name); else form.append("url", url);
+  form.append("expand", $("expand").checked ? "true" : "false");
+  form.append("consent", $("consent").checked ? "true" : "false");
+  form.append("use_face", $("face").checked ? "true" : "false");
+  form.append("use_clip", $("clip").checked ? "true" : "false");
+  form.append("min_confidence", $("min").value || "80");
+  $("go").disabled = true;
+  status.textContent = "Scanning… this can take a minute, longer with username expansion.";
+  try {
+    render(await post("/api/scan", form));
+    status.textContent = "Done.";
+  } catch (error) {
+    status.textContent = error.message; status.className = "error";
+  } finally { $("go").disabled = false; }
+});
+refreshPlan();
+</script>
+</body>
+</html>
