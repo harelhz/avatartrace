@@ -1,0 +1,50 @@
+# Secrets: never commit real keys
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Scan output and kept pictures can contain personal data
+/reports/
+/out/
+/cache/
+.cache/
+avatartrace-cache/
+*.report.html
+*.report.json
+*.report.csv
+
+# Model files
+.insightface/
+*.onnx
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+.python-version
+
+# Tools
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+
+# Editors and OS
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
+
+# Local tooling
+.claude/
