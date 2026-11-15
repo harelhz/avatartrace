@@ -252,7 +252,8 @@ class Scanner:
             self._stats["http_requests"] = http.request_count
 
         report = ScanReport(
-            query_source=query.source,
+            # Reports get shared: show the file name, not a path that reveals the local user and folders.
+            query_source=query.source if is_url(query.source) else Path(query.source).name,
             query_sha256=features.sha256,
             query_thumb=thumbnail_data_uri(query.image),
             query_width=features.width,

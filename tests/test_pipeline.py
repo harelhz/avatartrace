@@ -181,6 +181,7 @@ async def test_full_scan_labels_every_candidate(mock_http: respx.MockRouter, fix
     assert (statuses["broken"].status, statuses["broken"].message) == ("error", "quota exceeded")
     assert statuses["buggy"].status == "error"
     assert report.query_faces == 1
+    assert report.query_source == "face_a.jpg", "reports show the file name, never the local path"
     assert report.engines == {"face": "fake-face", "clip": "off"}
     assert providers[0].received[0].upload_jpeg.startswith(b"\xff\xd8")
     assert report.stats["candidates"] == 7
