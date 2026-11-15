@@ -44,8 +44,9 @@ app = typer.Typer(
     add_completion=False,
     rich_markup_mode=None,
 )
-console = Console()
-err = Console(stderr=True)
+# highlight=False: Rich must not recolour numbers or guess markup in text that comes from the web.
+console = Console(highlight=False)
+err = Console(stderr=True, highlight=False)
 
 LABEL_STYLE: dict[MatchLabel, str] = {
     MatchLabel.EXACT: "bold green",
@@ -123,7 +124,7 @@ def _confirm_upload(providers: list[Provider], accepted: bool) -> bool:
 
 def _version(value: bool) -> None:
     if value:
-        console.print(f"avatartrace {__version__}")
+        console.print(Text(f"avatartrace {__version__}"))
         raise typer.Exit
 
 
@@ -418,7 +419,7 @@ def clear_cache_command() -> None:
     from avatartrace.cache import clear_cache
 
     removed = clear_cache(_settings())
-    console.print(f"Removed {removed} cached run(s).")
+    console.print(Text(f"Removed {removed} cached run(s)."))
 
 
 if __name__ == "__main__":

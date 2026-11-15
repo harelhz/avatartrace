@@ -13,6 +13,11 @@ from PIL import Image
 from avatartrace.config import Settings
 from avatartrace.imaging import decode_image
 
+# Rich reads these when a Console is created, which happens when avatartrace.cli is imported.
+# Setting them here, before any test module is imported, keeps CLI output free of colour codes.
+os.environ.pop("FORCE_COLOR", None)
+os.environ["NO_COLOR"] = "1"
+
 FIXTURES = Path(__file__).parent / "fixtures"
 
 _KEY_VARIABLES = (
