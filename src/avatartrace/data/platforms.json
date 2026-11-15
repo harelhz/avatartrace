@@ -1,0 +1,4421 @@
+{
+  "schema": 1,
+  "_comment": "Data file for avatartrace. See CONTRIBUTING.md ('Adding a platform') for the meaning of every field.",
+  "redirectors": [
+    {
+      "host": "l\\.facebook\\.com|lm\\.facebook\\.com|l\\.instagram\\.com|l\\.threads\\.(?:net|com)|l\\.messenger\\.com",
+      "param": "u"
+    },
+    {
+      "host": "away\\.vk\\.com|(?:www\\.|m\\.)?vk\\.com",
+      "path": "^/away(?:\\.php)?$",
+      "param": "to"
+    },
+    {
+      "host": "(?:www\\.)?google\\.[a-z.]{2,6}",
+      "path": "^/url$",
+      "param": "q"
+    },
+    {
+      "host": "(?:www\\.)?google\\.[a-z.]{2,6}",
+      "path": "^/url$",
+      "param": "url"
+    },
+    {
+      "host": "(?:www\\.|m\\.)?youtube\\.com",
+      "path": "^/redirect$",
+      "param": "q"
+    },
+    {
+      "host": "out\\.reddit\\.com",
+      "param": "url"
+    },
+    {
+      "host": "t\\.umblr\\.com",
+      "path": "^/redirect$",
+      "param": "z"
+    },
+    {
+      "host": "(?:www\\.)?steamcommunity\\.com",
+      "path": "^/linkfilter/?$",
+      "param": "url"
+    },
+    {
+      "host": "(?:www\\.)?linkedin\\.com",
+      "path": "^/redir/redirect/?$",
+      "param": "url"
+    },
+    {
+      "host": "translate\\.google\\.com|translate\\.goog",
+      "path": "^/translate$",
+      "param": "u"
+    },
+    {
+      "host": "(?:web\\.)?archive\\.org",
+      "wayback": true
+    }
+  ],
+  "platforms": [
+    {
+      "id": "instagram",
+      "name": "Instagram",
+      "hosts": "(?:www\\.|m\\.)?(?:instagram\\.com|instagr\\.am)",
+      "username": "[A-Za-z0-9._]{1,30}",
+      "profile_url": "https://www.instagram.com/{username}/",
+      "display": "@{username}",
+      "reserved": [
+        "_n",
+        "_u",
+        "a",
+        "about",
+        "accounts",
+        "ads",
+        "api",
+        "ar",
+        "challenge",
+        "create",
+        "data",
+        "developer",
+        "direct",
+        "directory",
+        "download",
+        "emails",
+        "embed.js",
+        "explore",
+        "favicon.ico",
+        "graphql",
+        "guides",
+        "igtv",
+        "images",
+        "invites",
+        "legal",
+        "lite",
+        "locations",
+        "meta",
+        "n",
+        "nametag",
+        "oauth",
+        "p",
+        "popular",
+        "press",
+        "privacy",
+        "qr",
+        "reel",
+        "reels",
+        "robots.txt",
+        "s",
+        "session",
+        "share",
+        "static",
+        "stories",
+        "tags",
+        "terms",
+        "threads",
+        "topics",
+        "tv",
+        "web",
+        "your_activity"
+      ],
+      "patterns": [
+        {
+          "path": "^/stories/(?P<username>{U})(?:/\\d+)?/?$",
+          "kind": "content"
+        },
+        {
+          "path": "^/_u/(?P<username>{U})/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/(?P<username>{U})/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/(?P<username>{U})/(?:tagged|reels|saved|channel|feed|guides|followers|following|igtv)/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/(?P<username>{U})/(?:p|reel|tv)/[\\w-]+/?$",
+          "kind": "content"
+        }
+      ],
+      "avatar": [
+        {
+          "type": "html",
+          "extract": [
+            "og_image"
+          ],
+          "reject": [
+            "static.cdninstagram.com/rsrc.php"
+          ]
+        }
+      ],
+      "avatar_note": "Public profiles expose og:image to logged-out clients on many networks; data-centre and some regional IPs are redirected to the login page instead.",
+      "expand": true,
+      "example": "instagram"
+    },
+    {
+      "id": "tiktok",
+      "name": "TikTok",
+      "hosts": "(?:www\\.|m\\.)?tiktok\\.com",
+      "username": "[A-Za-z0-9._]{2,24}",
+      "profile_url": "https://www.tiktok.com/@{username}",
+      "display": "@{username}",
+      "patterns": [
+        {
+          "path": "^/@(?P<username>{U})/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/@(?P<username>{U})/(?:video|photo|live)(?:/\\d+)?/?$",
+          "kind": "content"
+        }
+      ],
+      "avatar": [
+        {
+          "type": "html",
+          "extract": [
+            "og_image",
+            "ld_json"
+          ]
+        }
+      ],
+      "avatar_note": "TikTok serves a JavaScript bot challenge to non-browser clients, so the avatar is normally not retrievable.",
+      "expand": false,
+      "example": "tiktok"
+    },
+    {
+      "id": "facebook",
+      "name": "Facebook",
+      "hosts": "(?:www\\.|m\\.|mobile\\.|web\\.|mbasic\\.|touch\\.|free\\.|[a-z]{2}-[a-z]{2}\\.)?(?:facebook|fb)\\.com",
+      "username": "[A-Za-z0-9.\\-]{3,80}",
+      "profile_url": "https://www.facebook.com/{username}",
+      "display": "{username}",
+      "reserved": [
+        "100",
+        "about",
+        "ad_campaign",
+        "ads",
+        "ajax",
+        "audiencenetwork",
+        "badges",
+        "bookmarks",
+        "browse",
+        "business",
+        "campaign",
+        "careers",
+        "checkpoint",
+        "commerce",
+        "common",
+        "communitystandards",
+        "creators",
+        "developers",
+        "dialog",
+        "directory",
+        "docs",
+        "donate",
+        "events",
+        "flx",
+        "friends",
+        "fundraiser",
+        "fundraisers",
+        "games",
+        "gaming",
+        "groups",
+        "hashtag",
+        "help",
+        "home.php",
+        "instantgames",
+        "jobs",
+        "l.php",
+        "latest",
+        "legal",
+        "lite",
+        "live",
+        "login",
+        "login.php",
+        "maps",
+        "marketplace",
+        "me",
+        "media",
+        "memories",
+        "messages",
+        "mobile",
+        "nd",
+        "note.php",
+        "notes",
+        "notifications",
+        "offers",
+        "pages",
+        "people",
+        "permalink.php",
+        "pg",
+        "photo",
+        "photo.php",
+        "photos",
+        "places",
+        "plugins",
+        "policies",
+        "policy",
+        "policy.php",
+        "privacy",
+        "profile.php",
+        "public",
+        "r.php",
+        "recover",
+        "reel",
+        "reels",
+        "reg",
+        "saved",
+        "search",
+        "settings",
+        "share",
+        "share.php",
+        "sharer",
+        "sharer.php",
+        "sharing",
+        "signup",
+        "stories",
+        "story.php",
+        "terms",
+        "tr",
+        "translations",
+        "v2.0",
+        "video",
+        "video.php",
+        "videos",
+        "watch",
+        "whitehat"
+      ],
+      "patterns": [
+        {
+          "path": "^/profile\\.php$",
+          "kind": "profile",
+          "query": {
+            "id": "(?P<username>\\d{1,20})"
+          },
+          "namespace": "id",
+          "id": true,
+          "validate": false,
+          "profile_url": "https://www.facebook.com/profile.php?id={username}",
+          "display": "id {username}"
+        },
+        {
+          "path": "^/people/[^/]+/(?P<username>\\d{5,20})/?$",
+          "kind": "profile",
+          "namespace": "id",
+          "id": true,
+          "validate": false,
+          "profile_url": "https://www.facebook.com/profile.php?id={username}",
+          "display": "id {username}"
+        },
+        {
+          "path": "^/pages/[^/]+/(?P<username>\\d{5,20})/?$",
+          "kind": "profile",
+          "namespace": "id",
+          "id": true,
+          "validate": false,
+          "profile_url": "https://www.facebook.com/profile.php?id={username}",
+          "display": "id {username}"
+        },
+        {
+          "path": "^/(?P<username>\\d{6,20})/?$",
+          "kind": "profile",
+          "namespace": "id",
+          "id": true,
+          "validate": false,
+          "profile_url": "https://www.facebook.com/profile.php?id={username}",
+          "display": "id {username}"
+        },
+        {
+          "path": "^/pg/(?P<username>{U})(?:/.*)?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/(?P<username>{U})/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/(?P<username>{U})/(?:about|photos|videos|friends|reviews|community|events|mentions|reels|followers|following|likes|photos_by|photos_albums|videos_by|about_[a-z_]+)/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/(?P<username>{U})/(?:posts|photos|videos|reels|activity)/.+$",
+          "kind": "content"
+        }
+      ],
+      "avatar": [
+        {
+          "type": "html",
+          "extract": [
+            "og_image"
+          ],
+          "reject": [
+            "static.xx.fbcdn.net/rsrc.php",
+            "facebook.com/images/fb_icon"
+          ]
+        }
+      ],
+      "avatar_note": "Public Pages and profiles that allow search-engine previews expose og:image; private or restricted profiles return a login page.",
+      "expand": true,
+      "example": "facebook"
+    },
+    {
+      "id": "threads",
+      "name": "Threads",
+      "hosts": "(?:www\\.)?threads\\.(?:net|com)",
+      "username": "[A-Za-z0-9._]{1,30}",
+      "profile_url": "https://www.threads.com/@{username}",
+      "display": "@{username}",
+      "patterns": [
+        {
+          "path": "^/@(?P<username>{U})/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/@(?P<username>{U})/(?:replies|reposts|media|tagged)/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/@(?P<username>{U})/post/[\\w-]+(?:/.*)?$",
+          "kind": "content"
+        }
+      ],
+      "avatar": [
+        {
+          "type": "html",
+          "extract": [
+            "og_image"
+          ],
+          "reject": [
+            "static.cdninstagram.com/rsrc.php"
+          ]
+        }
+      ],
+      "expand": true,
+      "example": "zuck"
+    },
+    {
+      "id": "x",
+      "name": "X (Twitter)",
+      "hosts": "(?:www\\.|m\\.|mobile\\.)?(?:x|twitter)\\.com",
+      "username": "[A-Za-z0-9_]{1,15}",
+      "profile_url": "https://x.com/{username}",
+      "display": "@{username}",
+      "reserved": [
+        "about",
+        "account",
+        "ads",
+        "anywhere",
+        "blog",
+        "business",
+        "communities",
+        "compose",
+        "developers",
+        "download",
+        "en",
+        "explore",
+        "followers",
+        "following",
+        "hashtag",
+        "help",
+        "home",
+        "i",
+        "intent",
+        "invitations",
+        "jobs",
+        "lists",
+        "login",
+        "logout",
+        "messages",
+        "moments",
+        "notifications",
+        "oauth",
+        "personalization",
+        "premium",
+        "premium_sign_up",
+        "privacy",
+        "rules",
+        "safety",
+        "search",
+        "search-advanced",
+        "session",
+        "sessions",
+        "settings",
+        "share",
+        "signup",
+        "status",
+        "statuses",
+        "topics",
+        "tos",
+        "verified-orgs-signup",
+        "who_to_follow",
+        "widgets"
+      ],
+      "patterns": [
+        {
+          "path": "^/intent/(?:user|follow)/?$",
+          "kind": "profile",
+          "query": {
+            "screen_name": "@?(?P<username>{U})"
+          }
+        },
+        {
+          "path": "^/i/user/(?P<username>\\d{1,20})/?$",
+          "kind": "profile",
+          "namespace": "id",
+          "id": true,
+          "validate": false,
+          "profile_url": "https://x.com/i/user/{username}",
+          "display": "id {username}"
+        },
+        {
+          "path": "^/(?P<username>{U})/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/(?P<username>{U})/(?:with_replies|media|likes|highlights|articles|following|followers|verified_followers|photo|header_photo|lists|affiliates|superfollows)/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/(?P<username>{U})/status(?:es)?/\\d+(?:/.*)?$",
+          "kind": "content"
+        }
+      ],
+      "avatar": [
+        {
+          "type": "api",
+          "name": "x"
+        },
+        {
+          "type": "html",
+          "extract": [
+            "regex"
+          ],
+          "regex": "rel=\"preload\" as=\"image\" imageSrcSet=\"(https://pbs\\.twimg\\.com/profile_images/[^\" ]+)",
+          "reject": [
+            "default_profile_images"
+          ],
+          "replace": [
+            [
+              "_mini.",
+              "_400x400."
+            ],
+            [
+              "_normal.",
+              "_400x400."
+            ]
+          ]
+        }
+      ],
+      "avatar_note": "Without X_BEARER_TOKEN the avatar is read from the image preload hint in the public profile HTML, which X may change or withhold at any time.",
+      "expand": true,
+      "example": "x"
+    },
+    {
+      "id": "github",
+      "name": "GitHub",
+      "hosts": "(?:www\\.|gist\\.)?github\\.com|[a-z0-9-]+\\.github\\.io",
+      "username": "[A-Za-z0-9](?:[A-Za-z0-9-]{0,37}[A-Za-z0-9])?",
+      "profile_url": "https://github.com/{username}",
+      "display": "{username}",
+      "reserved": [
+        "404",
+        "500",
+        "about",
+        "accelerator",
+        "account",
+        "advisories",
+        "apps",
+        "assets",
+        "blog",
+        "codespaces",
+        "collections",
+        "contact",
+        "copilot",
+        "customer-stories",
+        "dashboard",
+        "discussions",
+        "edu",
+        "education",
+        "enterprise",
+        "enterprises",
+        "events",
+        "explore",
+        "favicon.ico",
+        "features",
+        "git-guides",
+        "github-copilot",
+        "home",
+        "issues",
+        "join",
+        "learn",
+        "login",
+        "logos",
+        "logout",
+        "marketplace",
+        "mcp",
+        "mobile",
+        "models",
+        "new",
+        "newsroom",
+        "nonprofit",
+        "notifications",
+        "open-source",
+        "organizations",
+        "orgs",
+        "partners",
+        "password_reset",
+        "premium-support",
+        "pricing",
+        "pulls",
+        "raw",
+        "readme",
+        "resources",
+        "robots.txt",
+        "search",
+        "security",
+        "sessions",
+        "settings",
+        "signup",
+        "site",
+        "site-map",
+        "sitemap",
+        "skills",
+        "social-impact",
+        "solutions",
+        "spark",
+        "sponsors",
+        "stars",
+        "support",
+        "team",
+        "topics",
+        "trending",
+        "users",
+        "watching",
+        "why-github"
+      ],
+      "patterns": [
+        {
+          "path": "^/(?P<username>{U})/?$",
+          "kind": "profile",
+          "host": "^gist\\.github\\.com$"
+        },
+        {
+          "path": "^/(?P<username>{U})/[0-9a-f]+(?:/.*)?$",
+          "kind": "content",
+          "host": "^gist\\.github\\.com$"
+        },
+        {
+          "path": "^/.*$",
+          "kind": "content",
+          "host": "^(?P<username>{U})\\.github\\.io$"
+        },
+        {
+          "kind": "skip",
+          "host": "^gist\\.github\\.com$|\\.github\\.io$"
+        },
+        {
+          "path": "^/sponsors/(?P<username>{U})/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/orgs/(?P<username>{U})(?:/.*)?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/users/(?P<username>{U})(?:/.*)?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/(?P<username>{U})\\.(?:png|gif|keys|gpg|atom)$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/(?P<username>{U})/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/(?P<username>{U})/[A-Za-z0-9._-]+(?:/.*)?$",
+          "kind": "content"
+        }
+      ],
+      "avatar": [
+        {
+          "type": "json",
+          "url": "https://api.github.com/users/{username}",
+          "path": "avatar_url",
+          "missing_status": [
+            404,
+            410
+          ],
+          "auth": "github"
+        }
+      ],
+      "expand": true,
+      "example": "octocat"
+    },
+    {
+      "id": "reddit",
+      "name": "Reddit",
+      "hosts": "(?:www\\.|old\\.|new\\.|np\\.|m\\.|sh\\.|amp\\.)?reddit\\.com",
+      "username": "[A-Za-z0-9_-]{3,23}",
+      "profile_url": "https://www.reddit.com/user/{username}/",
+      "display": "u/{username}",
+      "reserved": [
+        "deleted",
+        "me"
+      ],
+      "patterns": [
+        {
+          "path": "^/(?:user|u)/(?P<username>{U})/comments/[a-z0-9]+(?:/.*)?$",
+          "kind": "content"
+        },
+        {
+          "path": "^/(?:user|u)/(?P<username>{U})(?:/(?:submitted|comments|overview|posts|saved|gilded|about|upvoted|downvoted|hidden)?)?/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/r/u_(?P<username>{U})(?:/.*)?$",
+          "kind": "profile"
+        }
+      ],
+      "avatar": [
+        {
+          "type": "api",
+          "name": "reddit"
+        },
+        {
+          "type": "html",
+          "extract": [
+            "og_image",
+            "ld_json"
+          ],
+          "reject": [
+            "redditstatic.com"
+          ]
+        }
+      ],
+      "avatar_note": "Reddit blocks logged-out, non-browser clients; set REDDIT_CLIENT_ID and REDDIT_CLIENT_SECRET (a free 'script' app) to use the official API.",
+      "expand": false,
+      "example": "spez"
+    },
+    {
+      "id": "youtube",
+      "name": "YouTube",
+      "hosts": "(?:www\\.|m\\.|music\\.|gaming\\.)?youtube\\.com",
+      "username": "[\\w.\\-·]{3,30}",
+      "profile_url": "https://www.youtube.com/@{username}",
+      "display": "@{username}",
+      "patterns": [
+        {
+          "path": "^/@(?P<username>{U})(?:/(?:videos|shorts|streams|playlists|community|posts|about|featured|live|podcasts|releases|channels|store|search)?)?/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/channel/(?P<username>UC[A-Za-z0-9_-]{22})(?:/[a-z]*)?/?$",
+          "kind": "profile",
+          "namespace": "channel",
+          "id": true,
+          "validate": false,
+          "case_sensitive": true,
+          "profile_url": "https://www.youtube.com/channel/{username}",
+          "display": "channel/{username}"
+        },
+        {
+          "path": "^/c/(?P<username>[^/]{1,100})(?:/[a-z]*)?/?$",
+          "kind": "profile",
+          "namespace": "c",
+          "validate": false,
+          "case_sensitive": true,
+          "profile_url": "https://www.youtube.com/c/{username}",
+          "display": "c/{username}"
+        },
+        {
+          "path": "^/user/(?P<username>[^/]{1,100})(?:/[a-z]*)?/?$",
+          "kind": "profile",
+          "namespace": "user",
+          "validate": false,
+          "case_sensitive": true,
+          "profile_url": "https://www.youtube.com/user/{username}",
+          "display": "user/{username}"
+        }
+      ],
+      "avatar": [
+        {
+          "type": "api",
+          "name": "youtube"
+        },
+        {
+          "type": "html",
+          "extract": [
+            "og_image"
+          ],
+          "reject": [
+            "/img/desktop/yt_",
+            "youtube.com/img/"
+          ]
+        }
+      ],
+      "avatar_note": "Channel pages expose og:image; in the EU a consent interstitial can replace the page, in which case set YOUTUBE_API_KEY to use the Data API.",
+      "expand": true,
+      "example": "youtube"
+    },
+    {
+      "id": "linkedin",
+      "name": "LinkedIn",
+      "hosts": "(?:www\\.|[a-z]{2,3}\\.)?linkedin\\.com",
+      "username": "[\\w\\-]{3,100}",
+      "profile_url": "https://www.linkedin.com/in/{username}/",
+      "display": "{username}",
+      "patterns": [
+        {
+          "path": "^/in/(?P<username>{U})(?:/(?:[a-z]{2}(?:[-_][A-Za-z]{2})?)?)?/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/in/(?P<username>{U})/(?:detail|details|recent-activity|overlay)(?:/.*)?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/company/(?P<username>[\\w\\-.&]{1,100})(?:/.*)?$",
+          "kind": "profile",
+          "namespace": "company",
+          "validate": false,
+          "profile_url": "https://www.linkedin.com/company/{username}/",
+          "display": "company/{username}"
+        },
+        {
+          "path": "^/pub/(?P<username>[^/]+(?:/[0-9a-zA-Z]+){3})/?$",
+          "kind": "profile",
+          "namespace": "pub",
+          "validate": false,
+          "profile_url": "https://www.linkedin.com/pub/{username}",
+          "display": "pub/{username}"
+        },
+        {
+          "path": "^/posts/(?P<username>[A-Za-z0-9\\-]{3,100})_[^/]+/?$",
+          "kind": "content"
+        }
+      ],
+      "avatar": [
+        {
+          "type": "html",
+          "extract": [
+            "og_image",
+            "ld_json"
+          ],
+          "reject": [
+            "static.licdn.com"
+          ]
+        }
+      ],
+      "avatar_note": "LinkedIn answers logged-out, non-browser clients with HTTP 999 or an auth wall, so profile pictures are not retrievable.",
+      "expand": false,
+      "example": "williamhgates"
+    },
+    {
+      "id": "pinterest",
+      "name": "Pinterest",
+      "hosts": "(?:www\\.|[a-z]{2}\\.)?pinterest\\.(?:com|ca|ch|at|de|fr|es|it|pt|se|dk|ie|nz|ph|cl|jp|ru|co\\.uk|co\\.kr|co\\.in|com\\.au|com\\.mx)",
+      "username": "[A-Za-z0-9_]{3,30}",
+      "profile_url": "https://www.pinterest.com/{username}/",
+      "display": "{username}",
+      "reserved": [
+        "_",
+        "about",
+        "all",
+        "amp",
+        "business",
+        "careers",
+        "categories",
+        "convert-business",
+        "cookies",
+        "create",
+        "discover",
+        "explore",
+        "homefeed",
+        "idea-pin-builder",
+        "ideas",
+        "login",
+        "news_hub",
+        "notifications",
+        "oauth",
+        "offline",
+        "password",
+        "pin",
+        "pins",
+        "privacy-policy",
+        "resource",
+        "search",
+        "settings",
+        "shopping",
+        "signup",
+        "source",
+        "terms-of-service",
+        "today",
+        "topics",
+        "videos"
+      ],
+      "patterns": [
+        {
+          "path": "^/(?P<username>{U})/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/(?P<username>{U})/(?:_saved|_created|pins|boards|followers|following|_shop|_profile)/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/(?P<username>{U})/[^/]+/?$",
+          "kind": "content"
+        }
+      ],
+      "avatar": [
+        {
+          "type": "html",
+          "extract": [
+            "ld_json"
+          ],
+          "reject": [
+            "default_",
+            "s.pinimg.com/images/user/default"
+          ]
+        }
+      ],
+      "expand": true,
+      "example": "pinterest"
+    },
+    {
+      "id": "snapchat",
+      "name": "Snapchat",
+      "hosts": "(?:www\\.|story\\.)?snapchat\\.com",
+      "username": "[A-Za-z][A-Za-z0-9._\\-]{2,14}",
+      "profile_url": "https://www.snapchat.com/add/{username}",
+      "display": "{username}",
+      "patterns": [
+        {
+          "path": "^/(?:add|u|s)/(?P<username>{U})/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/@(?P<username>{U})/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/@(?P<username>{U})/.+$",
+          "kind": "content"
+        }
+      ],
+      "avatar": [
+        {
+          "type": "html",
+          "extract": [
+            "og_image",
+            "ld_json"
+          ]
+        }
+      ],
+      "avatar_note": "Snapchat returns HTTP 404 for public profiles when the client is not a browser, so the picture is not retrievable.",
+      "expand": false,
+      "example": "snapchat"
+    },
+    {
+      "id": "telegram",
+      "name": "Telegram",
+      "hosts": "(?:www\\.)?(?:t\\.me|telegram\\.me|telegram\\.dog)|[a-z][a-z0-9_]{3,31}\\.t\\.me",
+      "username": "[A-Za-z][A-Za-z0-9_]{3,31}",
+      "profile_url": "https://t.me/{username}",
+      "display": "@{username}",
+      "reserved": [
+        "a",
+        "addemoji",
+        "addlist",
+        "addstickers",
+        "addtheme",
+        "apps",
+        "bg",
+        "blog",
+        "boost",
+        "c",
+        "confirmphone",
+        "contact",
+        "dl",
+        "faq",
+        "giftcode",
+        "invoice",
+        "iv",
+        "joinchat",
+        "k",
+        "login",
+        "m",
+        "msg",
+        "press",
+        "proxy",
+        "s",
+        "setlanguage",
+        "share",
+        "socks",
+        "www"
+      ],
+      "patterns": [
+        {
+          "path": "^/?$",
+          "kind": "profile",
+          "host": "^(?P<username>{U})\\.t\\.me$"
+        },
+        {
+          "kind": "skip",
+          "host": "^(?!www\\.).+\\.t\\.me$"
+        },
+        {
+          "path": "^/s/(?P<username>{U})(?:/\\d+)?/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/(?P<username>{U})/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/(?P<username>{U})/\\d+(?:/\\d+)?/?$",
+          "kind": "content"
+        }
+      ],
+      "avatar": [
+        {
+          "type": "html",
+          "extract": [
+            "og_image"
+          ],
+          "reject": [
+            "telegram.org/img/"
+          ]
+        }
+      ],
+      "expand": true,
+      "example": "telegram"
+    },
+    {
+      "id": "vk",
+      "name": "VK",
+      "hosts": "(?:www\\.|m\\.)?(?:vk\\.com|vk\\.ru|vkontakte\\.ru)",
+      "username": "[A-Za-z0-9_.]{2,32}",
+      "profile_url": "https://vk.com/{username}",
+      "display": "{username}",
+      "reserved": [
+        "about",
+        "ads",
+        "al_feed",
+        "apps",
+        "audio",
+        "audios",
+        "away",
+        "biz",
+        "blog",
+        "bookmarks",
+        "bugs",
+        "calls",
+        "clips",
+        "css",
+        "data_protection",
+        "dev",
+        "docs",
+        "edit",
+        "fave",
+        "feed",
+        "friends",
+        "gifts",
+        "groups",
+        "help",
+        "im",
+        "images",
+        "jobs",
+        "join",
+        "js",
+        "legal",
+        "licence",
+        "login",
+        "market",
+        "mini",
+        "music",
+        "page",
+        "photos",
+        "podcasts",
+        "press",
+        "privacy",
+        "restore",
+        "search",
+        "services",
+        "settings",
+        "share",
+        "stickers",
+        "stories",
+        "support",
+        "terms",
+        "video",
+        "videos",
+        "vkpay",
+        "wall",
+        "widget_community"
+      ],
+      "patterns": [
+        {
+          "path": "^/id(?P<username>\\d{1,12})/?$",
+          "kind": "profile",
+          "namespace": "id",
+          "id": true,
+          "validate": false,
+          "profile_url": "https://vk.com/id{username}",
+          "display": "id{username}"
+        },
+        {
+          "path": "^/(?:club|public|event)(?P<username>\\d{1,12})/?$",
+          "kind": "profile",
+          "namespace": "club",
+          "id": true,
+          "validate": false,
+          "profile_url": "https://vk.com/club{username}",
+          "display": "club{username}"
+        },
+        {
+          "path": "^/(?:wall|photo|video|album|topic|clip|doc|audio|market|story|app|write)-?\\d.*$",
+          "kind": "skip"
+        },
+        {
+          "path": "^/(?P<username>(?![^/]*\\.php$){U})/?$",
+          "kind": "profile"
+        }
+      ],
+      "avatar": [
+        {
+          "type": "html",
+          "extract": [
+            "og_image"
+          ],
+          "reject": [
+            "vk.com/images/",
+            "/images/camera_",
+            "/images/deactivated_"
+          ]
+        }
+      ],
+      "avatar_note": "VK redirects logged-out, non-browser clients to a generic page without profile data.",
+      "expand": false,
+      "example": "durov"
+    },
+    {
+      "id": "twitch",
+      "name": "Twitch",
+      "hosts": "(?:www\\.|m\\.|go\\.)?twitch\\.tv",
+      "username": "[A-Za-z0-9][A-Za-z0-9_]{2,24}",
+      "profile_url": "https://www.twitch.tv/{username}",
+      "display": "{username}",
+      "reserved": [
+        "activate",
+        "annual-recap",
+        "bits",
+        "broadcast",
+        "category",
+        "collections",
+        "communities",
+        "creatorcamp",
+        "directory",
+        "downloads",
+        "drops",
+        "embed",
+        "events",
+        "following",
+        "friends",
+        "inventory",
+        "jobs",
+        "legal",
+        "login",
+        "messages",
+        "moderator",
+        "p",
+        "partner",
+        "payments",
+        "popout",
+        "prime",
+        "privacy",
+        "products",
+        "redeem",
+        "search",
+        "security",
+        "settings",
+        "signup",
+        "store",
+        "subscriptions",
+        "team",
+        "turbo",
+        "u",
+        "user",
+        "videos",
+        "wallet",
+        "year"
+      ],
+      "patterns": [
+        {
+          "path": "^/(?P<username>{U})/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/(?P<username>{U})/(?:videos|clips|about|schedule|followers|following|squad|home)/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/(?P<username>{U})/(?:clip|v|video)/.+$",
+          "kind": "content"
+        }
+      ],
+      "avatar": [
+        {
+          "type": "api",
+          "name": "twitch"
+        },
+        {
+          "type": "html",
+          "extract": [
+            "og_image"
+          ],
+          "reject": [
+            "ttv-static-metadata",
+            "user-default-pictures"
+          ]
+        }
+      ],
+      "expand": true,
+      "example": "twitch"
+    },
+    {
+      "id": "bluesky",
+      "name": "Bluesky",
+      "hosts": "bsky\\.app|[a-z0-9-]+\\.bsky\\.social",
+      "username": "(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\\.)+[A-Za-z]{2,}|did:plc:[a-z2-7]{24}",
+      "profile_url": "https://bsky.app/profile/{username}",
+      "display": "@{username}",
+      "patterns": [
+        {
+          "path": "^/?$",
+          "kind": "profile",
+          "host": "^(?P<username>[a-z0-9-]+\\.bsky\\.social)$"
+        },
+        {
+          "kind": "skip",
+          "host": "\\.bsky\\.social$"
+        },
+        {
+          "path": "^/profile/(?P<username>{U})/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/profile/(?P<username>{U})/(?:follows|followers|known-followers)/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/profile/(?P<username>{U})/(?:post|feed|lists)/.+$",
+          "kind": "content"
+        }
+      ],
+      "avatar": [
+        {
+          "type": "json",
+          "url": "https://public.api.bsky.app/xrpc/app.bsky.actor.getProfile?actor={username}",
+          "path": "avatar",
+          "missing_status": [
+            400,
+            404
+          ]
+        }
+      ],
+      "expand": true,
+      "example": "bsky.app",
+      "expand_username": "{username}.bsky.social",
+      "expand_username_regex": "[A-Za-z0-9](?:[A-Za-z0-9-]{1,16}[A-Za-z0-9])",
+      "seed_regex": "^(?P<seed>[a-z0-9-]+)\\.bsky\\.social$"
+    },
+    {
+      "id": "mastodon",
+      "name": "Mastodon / Fediverse",
+      "hosts": "mastodon\\.social|mastodon\\.online|mstdn\\.social|mas\\.to|fosstodon\\.org|hachyderm\\.io|infosec\\.exchange|techhub\\.social|mastodon\\.world|c\\.im|mathstodon\\.xyz|chaos\\.social|social\\.vivaldi\\.net|mastodon\\.art|floss\\.social|mstdn\\.jp|mastodon\\.uno|universeodon\\.com|toot\\.community|aus\\.social|sfba\\.social|ruby\\.social|mastodon\\.gamedev\\.place|pixelfed\\.social",
+      "username": "[A-Za-z0-9_]{1,30}",
+      "profile_url": "https://{instance}/@{local}",
+      "display": "@{username}",
+      "patterns": [
+        {
+          "path": "^/(?:web/)?@(?P<username>{U})@(?P<instance>[A-Za-z0-9.-]+\\.[A-Za-z]{2,})/\\d+(?:/.*)?$",
+          "kind": "content"
+        },
+        {
+          "path": "^/(?:web/)?@(?P<username>{U})/\\d+(?:/.*)?$",
+          "kind": "content"
+        },
+        {
+          "path": "^/users/(?P<username>{U})/statuses/\\d+(?:/.*)?$",
+          "kind": "content"
+        },
+        {
+          "path": "^/(?:web/)?@(?P<username>{U})@(?P<instance>[A-Za-z0-9.-]+\\.[A-Za-z]{2,})/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/(?:web/)?@(?P<username>{U})/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/(?:web/)?@(?P<username>{U})/(?:with_replies|media|followers|following|tagged/[^/]+)/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/users/(?P<username>{U})/?$",
+          "kind": "profile"
+        }
+      ],
+      "avatar": [
+        {
+          "type": "json",
+          "url": "https://{instance}/api/v1/accounts/lookup?acct={local}",
+          "path": "avatar_static|avatar",
+          "missing_status": [
+            404,
+            410
+          ],
+          "reject": [
+            "/avatars/original/missing.png"
+          ]
+        }
+      ],
+      "avatar_note": "Any host using Mastodon-style /@user URLs is tried through the standard public lookup API; non-Mastodon hosts simply drop out as 'account not found'.",
+      "expand": true,
+      "example": "Gargron",
+      "account": "{username}@{instance}",
+      "generic": true,
+      "expand_instances": [
+        "mastodon.social",
+        "mastodon.online",
+        "mstdn.social",
+        "mas.to",
+        "fosstodon.org",
+        "hachyderm.io",
+        "infosec.exchange",
+        "techhub.social",
+        "mastodon.world",
+        "c.im"
+      ],
+      "example_instance": "mastodon.social"
+    },
+    {
+      "id": "steam",
+      "name": "Steam",
+      "hosts": "(?:www\\.)?steamcommunity\\.com",
+      "username": "[A-Za-z0-9_-]{2,32}",
+      "profile_url": "https://steamcommunity.com/id/{username}",
+      "display": "{username}",
+      "patterns": [
+        {
+          "path": "^/id/(?P<username>{U})(?:/.*)?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/profiles/(?P<username>7656119\\d{10})(?:/.*)?$",
+          "kind": "profile",
+          "namespace": "profiles",
+          "id": true,
+          "validate": false,
+          "profile_url": "https://steamcommunity.com/profiles/{username}",
+          "display": "profiles/{username}"
+        }
+      ],
+      "avatar": [
+        {
+          "type": "html",
+          "extract": [
+            "regex"
+          ],
+          "url": "{profile_url}?xml=1",
+          "regex": "<avatarFull><!\\[CDATA\\[(https?://[^\\]]+)\\]\\]></avatarFull>",
+          "reject": [
+            "fef49e7fa7e1997310d705b2a6158ff8dc1cdfeb"
+          ]
+        }
+      ],
+      "expand": true,
+      "example": "gabelogannewell"
+    },
+    {
+      "id": "soundcloud",
+      "name": "SoundCloud",
+      "hosts": "(?:www\\.|m\\.)?soundcloud\\.com",
+      "username": "[A-Za-z0-9_-]{3,25}",
+      "profile_url": "https://soundcloud.com/{username}",
+      "display": "{username}",
+      "reserved": [
+        "artists",
+        "charts",
+        "community-guidelines",
+        "connect",
+        "creators",
+        "dashboard",
+        "discover",
+        "dj",
+        "download",
+        "explore",
+        "fans",
+        "feed",
+        "for",
+        "go",
+        "groups",
+        "imprint",
+        "jobs",
+        "legal",
+        "library",
+        "logout",
+        "messages",
+        "mobile",
+        "music-feeds",
+        "n",
+        "notifications",
+        "oembed",
+        "pages",
+        "partners",
+        "people",
+        "player",
+        "playlist-history",
+        "popular",
+        "premium",
+        "press",
+        "pro",
+        "search",
+        "settings",
+        "signin",
+        "sounds",
+        "stations",
+        "stream",
+        "tags",
+        "terms-of-use",
+        "tour",
+        "tracks",
+        "trending-music-us",
+        "upload",
+        "welcome",
+        "you"
+      ],
+      "patterns": [
+        {
+          "path": "^/(?P<username>{U})/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/(?P<username>{U})/(?:tracks|albums|sets|reposts|likes|followers|following|popular-tracks|comments|spotlight)/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/(?P<username>{U})/.+$",
+          "kind": "content"
+        }
+      ],
+      "avatar": [
+        {
+          "type": "html",
+          "extract": [
+            "og_image"
+          ],
+          "reject": [
+            "a-v2.sndcdn.com/assets/images",
+            "default_avatar"
+          ]
+        }
+      ],
+      "expand": true,
+      "example": "soundcloud"
+    },
+    {
+      "id": "spotify",
+      "name": "Spotify",
+      "hosts": "open\\.spotify\\.com|play\\.spotify\\.com",
+      "username": "[^/\\s]{1,64}",
+      "profile_url": "https://open.spotify.com/user/{username}",
+      "display": "{username}",
+      "case_sensitive": true,
+      "patterns": [
+        {
+          "path": "^(?:/intl-[a-z]{2,3}(?:-[a-z]{2})?)?/user/(?P<username>{U})(?:/(?:playlists|followers|following|top)?)?/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^(?:/intl-[a-z]{2,3}(?:-[a-z]{2})?)?/artist/(?P<username>[0-9A-Za-z]{22})(?:/.*)?$",
+          "kind": "profile",
+          "namespace": "artist",
+          "id": true,
+          "validate": false,
+          "profile_url": "https://open.spotify.com/artist/{username}",
+          "display": "artist/{username}"
+        }
+      ],
+      "avatar": [
+        {
+          "type": "html",
+          "extract": [
+            "og_image"
+          ]
+        }
+      ],
+      "avatar_note": "Spotify user IDs are not chosen usernames, so Spotify is not part of username expansion.",
+      "expand": false,
+      "example": "spotify"
+    },
+    {
+      "id": "medium",
+      "name": "Medium",
+      "hosts": "(?:www\\.)?medium\\.com|[a-z0-9-]+\\.medium\\.com",
+      "username": "[A-Za-z0-9._-]{1,50}",
+      "profile_url": "https://medium.com/@{username}",
+      "display": "@{username}",
+      "patterns": [
+        {
+          "path": "^/?$",
+          "kind": "profile",
+          "host": "^(?P<username>(?!(?:www|help|policy|about|blog|jobs|medium|m|api|link|miro|cdn-images-\\d|cdn-static-\\d|towardsdatascience)\\.)[a-z0-9-]+)\\.medium\\.com$"
+        },
+        {
+          "path": "^/.+$",
+          "kind": "content",
+          "host": "^(?P<username>(?!(?:www|help|policy|about|blog|jobs|medium|m|api|link|miro|cdn-images-\\d|cdn-static-\\d|towardsdatascience)\\.)[a-z0-9-]+)\\.medium\\.com$"
+        },
+        {
+          "kind": "skip",
+          "host": "^(?!www\\.)[a-z0-9-]+\\.medium\\.com$"
+        },
+        {
+          "path": "^/@(?P<username>{U})/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/@(?P<username>{U})/(?:about|followers|following|lists|has-recommended|subscribe)/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/@(?P<username>{U})/.+$",
+          "kind": "content"
+        }
+      ],
+      "avatar": [
+        {
+          "type": "html",
+          "extract": [
+            "og_image",
+            "ld_json"
+          ],
+          "reject": [
+            "miro.medium.com/v2/1*m-R_BkNf1Qjr1YbyOIJY2w",
+            "medium_logo"
+          ]
+        }
+      ],
+      "avatar_note": "Medium sits behind Cloudflare bot protection and answers non-browser clients with HTTP 403.",
+      "expand": false,
+      "example": "ev"
+    },
+    {
+      "id": "linktree",
+      "name": "Linktree",
+      "hosts": "(?:www\\.)?linktr\\.ee",
+      "username": "[A-Za-z0-9_.]{1,60}",
+      "profile_url": "https://linktr.ee/{username}",
+      "display": "{username}",
+      "reserved": [
+        "about",
+        "admin",
+        "api",
+        "blog",
+        "creators",
+        "discover",
+        "embed",
+        "forgot",
+        "help",
+        "login",
+        "marketplace",
+        "og",
+        "pricing",
+        "privacy",
+        "products",
+        "register",
+        "s",
+        "terms",
+        "tools",
+        "universal-login"
+      ],
+      "patterns": [
+        {
+          "path": "^/(?P<username>{U})/?$",
+          "kind": "profile"
+        }
+      ],
+      "avatar": [
+        {
+          "type": "html",
+          "extract": [
+            "regex"
+          ],
+          "regex": "\"profilePictureUrl\":\"(https?:[^\"]+)\"",
+          "reject": [
+            "/blank-avatar",
+            "default-avatar"
+          ]
+        }
+      ],
+      "expand": true,
+      "example": "linktree"
+    },
+    {
+      "id": "gitlab",
+      "name": "GitLab",
+      "hosts": "(?:www\\.)?gitlab\\.com",
+      "username": "[A-Za-z0-9_][A-Za-z0-9_.\\-]{1,254}",
+      "profile_url": "https://gitlab.com/{username}",
+      "display": "{username}",
+      "reserved": [
+        "-",
+        "about",
+        "admin",
+        "api",
+        "assets",
+        "dashboard",
+        "explore",
+        "favicon.ico",
+        "groups",
+        "health_check",
+        "help",
+        "import",
+        "jwt",
+        "login",
+        "oauth",
+        "pricing",
+        "profile",
+        "projects",
+        "public",
+        "robots.txt",
+        "search",
+        "sitemap",
+        "snippets",
+        "uploads",
+        "users"
+      ],
+      "patterns": [
+        {
+          "path": "^/(?P<username>{U})/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/(?P<username>{U})/.+$",
+          "kind": "content"
+        }
+      ],
+      "avatar": [
+        {
+          "type": "json",
+          "url": "https://gitlab.com/api/v4/users?username={username}",
+          "path": "[0].avatar_url",
+          "missing_status": [
+            404,
+            410
+          ]
+        }
+      ],
+      "expand": true,
+      "example": "gitlab-bot"
+    },
+    {
+      "id": "codeberg",
+      "name": "Codeberg",
+      "hosts": "(?:www\\.)?codeberg\\.org",
+      "username": "[A-Za-z0-9][A-Za-z0-9_.\\-]{0,39}",
+      "profile_url": "https://codeberg.org/{username}",
+      "display": "{username}",
+      "reserved": [
+        "-",
+        "admin",
+        "api",
+        "assets",
+        "attachments",
+        "avatars",
+        "captcha",
+        "explore",
+        "issues",
+        "login",
+        "milestones",
+        "notifications",
+        "org",
+        "pulls",
+        "repo",
+        "repo-avatars",
+        "swagger",
+        "user"
+      ],
+      "patterns": [
+        {
+          "path": "^/(?P<username>{U})/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/(?P<username>{U})/.+$",
+          "kind": "content"
+        }
+      ],
+      "avatar": [
+        {
+          "type": "json",
+          "url": "https://codeberg.org/api/v1/users/{username}",
+          "path": "avatar_url",
+          "missing_status": [
+            404,
+            410
+          ]
+        }
+      ],
+      "expand": true,
+      "example": "forgejo"
+    },
+    {
+      "id": "gitea",
+      "name": "Gitea",
+      "hosts": "(?:www\\.)?gitea\\.com",
+      "username": "[A-Za-z0-9][A-Za-z0-9_.\\-]{0,39}",
+      "profile_url": "https://gitea.com/{username}",
+      "display": "{username}",
+      "reserved": [
+        "-",
+        "admin",
+        "api",
+        "assets",
+        "attachments",
+        "avatars",
+        "captcha",
+        "explore",
+        "issues",
+        "login",
+        "milestones",
+        "notifications",
+        "org",
+        "pulls",
+        "repo",
+        "repo-avatars",
+        "swagger",
+        "user"
+      ],
+      "patterns": [
+        {
+          "path": "^/(?P<username>{U})/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/(?P<username>{U})/.+$",
+          "kind": "content"
+        }
+      ],
+      "avatar": [
+        {
+          "type": "json",
+          "url": "https://gitea.com/api/v1/users/{username}",
+          "path": "avatar_url",
+          "missing_status": [
+            404,
+            410
+          ]
+        }
+      ],
+      "expand": true,
+      "example": "lunny"
+    },
+    {
+      "id": "bitbucket",
+      "name": "Bitbucket",
+      "hosts": "(?:www\\.)?bitbucket\\.org",
+      "username": "[A-Za-z0-9_][A-Za-z0-9_\\-]{0,61}",
+      "profile_url": "https://bitbucket.org/{username}/",
+      "display": "{username}",
+      "reserved": [
+        "-",
+        "account",
+        "api",
+        "blog",
+        "dashboard",
+        "gateway",
+        "product",
+        "repo",
+        "site",
+        "snippets",
+        "socialauth",
+        "support",
+        "workspaces"
+      ],
+      "patterns": [
+        {
+          "path": "^/(?P<username>{U})/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/(?P<username>{U})/.+$",
+          "kind": "content"
+        }
+      ],
+      "avatar": [
+        {
+          "type": "json",
+          "url": "https://api.bitbucket.org/2.0/workspaces/{username}",
+          "path": "links.avatar.href",
+          "missing_status": [
+            404,
+            410
+          ]
+        }
+      ],
+      "expand": true,
+      "example": "atlassian"
+    },
+    {
+      "id": "huggingface",
+      "name": "Hugging Face",
+      "hosts": "(?:www\\.)?huggingface\\.co",
+      "username": "[A-Za-z0-9][A-Za-z0-9_.\\-]{1,41}",
+      "profile_url": "https://huggingface.co/{username}",
+      "display": "{username}",
+      "reserved": [
+        "api",
+        "blog",
+        "brand",
+        "changelog",
+        "chat",
+        "classrooms",
+        "collections",
+        "content-guidelines",
+        "datasets",
+        "docs",
+        "enterprise",
+        "front",
+        "inference",
+        "inference-endpoints",
+        "jobs",
+        "join",
+        "languages",
+        "learn",
+        "login",
+        "metrics",
+        "models",
+        "new",
+        "new-dataset",
+        "new-space",
+        "notifications",
+        "organizations",
+        "papers",
+        "playground",
+        "posts",
+        "pricing",
+        "privacy",
+        "search",
+        "security",
+        "settings",
+        "spaces",
+        "static",
+        "storage",
+        "subscribe",
+        "support",
+        "tasks",
+        "terms-of-service",
+        "welcome"
+      ],
+      "patterns": [
+        {
+          "path": "^/(?P<username>{U})/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/(?P<username>{U})/.+$",
+          "kind": "content"
+        }
+      ],
+      "avatar": [
+        {
+          "type": "json",
+          "url": "https://huggingface.co/api/users/{username}/overview",
+          "path": "avatarUrl",
+          "missing_status": [
+            404,
+            410
+          ],
+          "reject": [
+            "huggingface.co/avatars/"
+          ]
+        }
+      ],
+      "expand": true,
+      "example": "julien-c"
+    },
+    {
+      "id": "dockerhub",
+      "name": "Docker Hub",
+      "hosts": "hub\\.docker\\.com",
+      "username": "[a-z0-9]{4,30}",
+      "profile_url": "https://hub.docker.com/u/{username}",
+      "display": "{username}",
+      "patterns": [
+        {
+          "path": "^/u/(?P<username>{U})/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/r/(?P<username>{U})/.+$",
+          "kind": "content"
+        }
+      ],
+      "avatar": [
+        {
+          "type": "json",
+          "url": "https://hub.docker.com/v2/users/{username}/",
+          "path": "gravatar_url",
+          "missing_status": [
+            404,
+            410
+          ]
+        }
+      ],
+      "expand": true,
+      "example": "docker"
+    },
+    {
+      "id": "devto",
+      "name": "DEV Community",
+      "hosts": "(?:www\\.)?dev\\.to",
+      "username": "[A-Za-z0-9_]{2,30}",
+      "profile_url": "https://dev.to/{username}",
+      "display": "{username}",
+      "reserved": [
+        "about",
+        "admin",
+        "api",
+        "async_info",
+        "badges",
+        "billboards",
+        "challenges",
+        "code-of-conduct",
+        "comments",
+        "community-moderation",
+        "connect",
+        "contact",
+        "dashboard",
+        "enter",
+        "faq",
+        "feed",
+        "guides",
+        "help",
+        "latest",
+        "listings",
+        "mod",
+        "new",
+        "notifications",
+        "organization-info",
+        "p",
+        "page",
+        "pod",
+        "podcasts",
+        "privacy",
+        "rails",
+        "reactions",
+        "readinglist",
+        "search",
+        "series",
+        "settings",
+        "shop",
+        "social",
+        "software-comparisons",
+        "sponsors",
+        "stories",
+        "t",
+        "tags",
+        "terms",
+        "top",
+        "users",
+        "videos"
+      ],
+      "patterns": [
+        {
+          "path": "^/(?P<username>{U})/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/(?P<username>{U})/.+$",
+          "kind": "content"
+        }
+      ],
+      "avatar": [
+        {
+          "type": "json",
+          "url": "https://dev.to/api/users/by_username?url={username}",
+          "path": "profile_image",
+          "missing_status": [
+            404,
+            410
+          ]
+        }
+      ],
+      "expand": true,
+      "example": "ben"
+    },
+    {
+      "id": "scratch",
+      "name": "Scratch",
+      "hosts": "scratch\\.mit\\.edu",
+      "username": "[A-Za-z0-9_-]{3,20}",
+      "profile_url": "https://scratch.mit.edu/users/{username}/",
+      "display": "{username}",
+      "patterns": [
+        {
+          "path": "^/users/(?P<username>{U})/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/users/(?P<username>{U})/.+$",
+          "kind": "content"
+        }
+      ],
+      "avatar": [
+        {
+          "type": "json",
+          "url": "https://api.scratch.mit.edu/users/{username}",
+          "path": "profile.images.90x90",
+          "missing_status": [
+            404,
+            410
+          ]
+        }
+      ],
+      "expand": true,
+      "example": "griffpatch"
+    },
+    {
+      "id": "chesscom",
+      "name": "Chess.com",
+      "hosts": "(?:www\\.)?chess\\.com",
+      "username": "[A-Za-z0-9_-]{3,25}",
+      "profile_url": "https://www.chess.com/member/{username}",
+      "display": "{username}",
+      "patterns": [
+        {
+          "path": "^/member/(?P<username>{U})/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/member/(?P<username>{U})/.+$",
+          "kind": "content"
+        }
+      ],
+      "avatar": [
+        {
+          "type": "json",
+          "url": "https://api.chess.com/pub/player/{username}",
+          "path": "avatar",
+          "missing_status": [
+            404,
+            410
+          ]
+        }
+      ],
+      "expand": true,
+      "example": "hikaru"
+    },
+    {
+      "id": "keybase",
+      "name": "Keybase",
+      "hosts": "(?:www\\.)?keybase\\.io",
+      "username": "[A-Za-z0-9_]{2,16}",
+      "profile_url": "https://keybase.io/{username}",
+      "display": "{username}",
+      "reserved": [
+        "_",
+        "a",
+        "account",
+        "blog",
+        "decrypt",
+        "docs",
+        "docs-assets",
+        "download",
+        "encrypt",
+        "i",
+        "images",
+        "inv",
+        "jobs",
+        "kbpbot",
+        "popular-teams",
+        "privacy",
+        "sign",
+        "team",
+        "tos",
+        "triplesec",
+        "verify"
+      ],
+      "patterns": [
+        {
+          "path": "^/(?P<username>{U})/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/(?P<username>{U})/.+$",
+          "kind": "content"
+        }
+      ],
+      "avatar": [
+        {
+          "type": "json",
+          "url": "https://keybase.io/_/api/1.0/user/lookup.json?usernames={username}&fields=pictures",
+          "path": "them[0].pictures.primary.url",
+          "missing_status": [
+            404,
+            410
+          ]
+        }
+      ],
+      "expand": true,
+      "example": "chris"
+    },
+    {
+      "id": "gravatar",
+      "name": "Gravatar",
+      "hosts": "(?:www\\.|[a-z]{2}\\.)?gravatar\\.com",
+      "username": "[A-Za-z0-9][A-Za-z0-9_\\-]{2,62}",
+      "profile_url": "https://gravatar.com/{username}",
+      "display": "{username}",
+      "reserved": [
+        "404",
+        "avatar",
+        "blog",
+        "connect",
+        "developers",
+        "docs",
+        "emails",
+        "images",
+        "login",
+        "policy",
+        "privacy",
+        "profile",
+        "profiles",
+        "signup",
+        "site",
+        "support",
+        "tos",
+        "userimage",
+        "why-gravatar"
+      ],
+      "patterns": [
+        {
+          "path": "^/(?P<username>{U})/?$",
+          "kind": "profile"
+        }
+      ],
+      "avatar": [
+        {
+          "type": "json",
+          "url": "https://api.gravatar.com/v3/profiles/{username}",
+          "path": "avatar_url",
+          "missing_status": [
+            404,
+            410
+          ]
+        }
+      ],
+      "expand": true,
+      "example": "matt"
+    },
+    {
+      "id": "lobsters",
+      "name": "Lobsters",
+      "hosts": "lobste\\.rs",
+      "username": "[A-Za-z0-9_\\-]{1,25}",
+      "profile_url": "https://lobste.rs/~{username}",
+      "display": "{username}",
+      "patterns": [
+        {
+          "path": "^/(?:~|u/)(?P<username>{U})/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/(?:~|u/)(?P<username>{U})/.+$",
+          "kind": "content"
+        }
+      ],
+      "avatar": [
+        {
+          "type": "json",
+          "url": "https://lobste.rs/~{username}.json",
+          "path": "avatar_url",
+          "missing_status": [
+            404,
+            410
+          ]
+        }
+      ],
+      "expand": true,
+      "example": "jcs"
+    },
+    {
+      "id": "dailymotion",
+      "name": "Dailymotion",
+      "hosts": "(?:www\\.)?dailymotion\\.com",
+      "username": "[A-Za-z0-9_\\-.]{3,50}",
+      "profile_url": "https://www.dailymotion.com/{username}",
+      "display": "{username}",
+      "reserved": [
+        "animals",
+        "auto",
+        "browse",
+        "cdn",
+        "channel",
+        "creative",
+        "crossdomain.xml",
+        "embed",
+        "en",
+        "feed",
+        "following",
+        "fr",
+        "fun",
+        "hashtag",
+        "history",
+        "kids",
+        "legal",
+        "library",
+        "lifestyle",
+        "live",
+        "music",
+        "news",
+        "notifications",
+        "partner",
+        "people",
+        "player",
+        "playlist",
+        "register",
+        "robots.txt",
+        "school",
+        "search",
+        "settings",
+        "shortfilms",
+        "signin",
+        "signout",
+        "sport",
+        "tech",
+        "topic",
+        "travel",
+        "tv",
+        "upload",
+        "us",
+        "video",
+        "videogames",
+        "watchlater",
+        "webcam"
+      ],
+      "patterns": [
+        {
+          "path": "^/(?P<username>{U})/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/(?P<username>{U})/.+$",
+          "kind": "content"
+        }
+      ],
+      "avatar": [
+        {
+          "type": "json",
+          "url": "https://api.dailymotion.com/user/{username}?fields=avatar_360_url",
+          "path": "avatar_360_url",
+          "missing_status": [
+            404,
+            410
+          ]
+        }
+      ],
+      "expand": true,
+      "example": "dailymotion"
+    },
+    {
+      "id": "mixcloud",
+      "name": "Mixcloud",
+      "hosts": "(?:www\\.|m\\.)?mixcloud\\.com",
+      "username": "[A-Za-z0-9_\\-]{2,30}",
+      "profile_url": "https://www.mixcloud.com/{username}/",
+      "display": "{username}",
+      "reserved": [
+        "about",
+        "advertise",
+        "categories",
+        "competitions",
+        "dashboard",
+        "developers",
+        "discover",
+        "favorites",
+        "genres",
+        "inbox",
+        "jobs",
+        "live",
+        "media",
+        "mixes",
+        "my",
+        "notifications",
+        "oauth",
+        "player",
+        "press",
+        "privacy",
+        "pro",
+        "search",
+        "select",
+        "settings",
+        "tag",
+        "terms",
+        "track",
+        "upload",
+        "widget"
+      ],
+      "patterns": [
+        {
+          "path": "^/(?P<username>{U})/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/(?P<username>{U})/(?:uploads|favorites|listens|followers|following|playlists|stream|posts)/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/(?P<username>{U})/.+$",
+          "kind": "content"
+        }
+      ],
+      "avatar": [
+        {
+          "type": "json",
+          "url": "https://api.mixcloud.com/{username}/",
+          "path": "pictures.640wx640h|pictures.large|pictures.medium",
+          "missing_status": [
+            404,
+            410
+          ],
+          "reject": [
+            "/defaults/"
+          ]
+        }
+      ],
+      "expand": true,
+      "example": "spartacus"
+    },
+    {
+      "id": "lemmy",
+      "name": "Lemmy",
+      "hosts": "lemmy\\.world|lemmy\\.ml|sh\\.itjust\\.works|lemmy\\.dbzer0\\.com|programming\\.dev|beehaw\\.org|feddit\\.org|lemmy\\.ca",
+      "username": "[A-Za-z0-9_]{3,26}",
+      "profile_url": "https://{instance}/u/{local}",
+      "display": "@{username}",
+      "patterns": [
+        {
+          "path": "^/u/(?P<username>{U})@(?P<instance>[A-Za-z0-9.-]+\\.[A-Za-z]{2,})/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/u/(?P<username>{U})/?$",
+          "kind": "profile"
+        }
+      ],
+      "avatar": [
+        {
+          "type": "json",
+          "url": "https://{instance}/api/v3/user?username={local}",
+          "path": "person_view.person.avatar",
+          "missing_status": [
+            400,
+            404
+          ]
+        }
+      ],
+      "expand": true,
+      "example": "ruud",
+      "account": "{username}@{instance}",
+      "expand_instances": [
+        "lemmy.world",
+        "lemmy.ml"
+      ],
+      "example_instance": "lemmy.world"
+    },
+    {
+      "id": "cratesio",
+      "name": "crates.io",
+      "hosts": "(?:www\\.)?crates\\.io",
+      "username": "[A-Za-z0-9](?:[A-Za-z0-9-]{0,37}[A-Za-z0-9])?",
+      "profile_url": "https://crates.io/users/{username}",
+      "display": "{username}",
+      "patterns": [
+        {
+          "path": "^/users/(?P<username>{U})/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/users/(?P<username>{U})/.+$",
+          "kind": "content"
+        }
+      ],
+      "avatar": [
+        {
+          "type": "json",
+          "url": "https://crates.io/api/v1/users/{username}",
+          "path": "user.avatar",
+          "missing_status": [
+            404,
+            410
+          ]
+        }
+      ],
+      "expand": true,
+      "example": "dtolnay"
+    },
+    {
+      "id": "farcaster",
+      "name": "Farcaster",
+      "hosts": "(?:www\\.)?(?:farcaster\\.xyz|warpcast\\.com)",
+      "username": "[a-z0-9][a-z0-9\\-]{0,15}(?:\\.eth)?",
+      "profile_url": "https://farcaster.xyz/{username}",
+      "display": "{username}",
+      "reserved": [
+        "about",
+        "api",
+        "explore",
+        "favicon.ico",
+        "miniapps",
+        "notifications",
+        "settings",
+        "~"
+      ],
+      "patterns": [
+        {
+          "path": "^/(?P<username>{U})/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/(?P<username>{U})/.+$",
+          "kind": "content"
+        }
+      ],
+      "avatar": [
+        {
+          "type": "json",
+          "url": "https://api.warpcast.com/v2/user-by-username?username={username}",
+          "path": "result.user.pfp.url",
+          "missing_status": [
+            400,
+            404
+          ]
+        }
+      ],
+      "expand": true,
+      "example": "dwr"
+    },
+    {
+      "id": "qiita",
+      "name": "Qiita",
+      "hosts": "(?:www\\.)?qiita\\.com",
+      "username": "[A-Za-z0-9_\\-]{1,32}",
+      "profile_url": "https://qiita.com/{username}",
+      "display": "{username}",
+      "reserved": [
+        "about",
+        "advent-calendar",
+        "api",
+        "badges",
+        "conference",
+        "drafts",
+        "help",
+        "items",
+        "login",
+        "notifications",
+        "official-columns",
+        "official-events",
+        "opportunities",
+        "organizations",
+        "privacy",
+        "public",
+        "qiita-award",
+        "question-feed",
+        "questions",
+        "release-notes",
+        "search",
+        "settings",
+        "signup",
+        "stock",
+        "stock-feed",
+        "tag-feed",
+        "tags",
+        "terms",
+        "timeline",
+        "trend",
+        "users"
+      ],
+      "patterns": [
+        {
+          "path": "^/(?P<username>{U})/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/(?P<username>{U})/.+$",
+          "kind": "content"
+        }
+      ],
+      "avatar": [
+        {
+          "type": "json",
+          "url": "https://qiita.com/api/v2/users/{username}",
+          "path": "profile_image_url",
+          "missing_status": [
+            404,
+            410
+          ]
+        }
+      ],
+      "expand": true,
+      "example": "Qiita"
+    },
+    {
+      "id": "zenn",
+      "name": "Zenn",
+      "hosts": "(?:www\\.)?zenn\\.dev",
+      "username": "[A-Za-z0-9_]{1,30}",
+      "profile_url": "https://zenn.dev/{username}",
+      "display": "{username}",
+      "reserved": [
+        "about",
+        "api",
+        "articles",
+        "badges",
+        "books",
+        "dashboard",
+        "enter",
+        "events",
+        "explore",
+        "faq",
+        "inquiry",
+        "library",
+        "notifications",
+        "p",
+        "privacy",
+        "publications",
+        "scraps",
+        "search",
+        "settings",
+        "tech-or-idea",
+        "terms",
+        "tokusho",
+        "topics",
+        "trending"
+      ],
+      "patterns": [
+        {
+          "path": "^/(?P<username>{U})/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/(?P<username>{U})/.+$",
+          "kind": "content"
+        }
+      ],
+      "avatar": [
+        {
+          "type": "json",
+          "url": "https://zenn.dev/api/users/{username}",
+          "path": "user.avatar_url",
+          "missing_status": [
+            404,
+            410
+          ]
+        }
+      ],
+      "expand": true,
+      "example": "catnose99"
+    },
+    {
+      "id": "notecom",
+      "name": "note",
+      "hosts": "(?:www\\.)?note\\.com",
+      "username": "[A-Za-z0-9_]{3,16}",
+      "profile_url": "https://note.com/{username}",
+      "display": "{username}",
+      "reserved": [
+        "api",
+        "categories",
+        "circles",
+        "contests",
+        "dashboard",
+        "events",
+        "following",
+        "hashtag",
+        "interests",
+        "login",
+        "m",
+        "magazines",
+        "membership",
+        "notes",
+        "notifications",
+        "premium",
+        "privacy",
+        "ranking",
+        "recommend",
+        "search",
+        "settings",
+        "signup",
+        "sitesettings",
+        "terms",
+        "topic"
+      ],
+      "patterns": [
+        {
+          "path": "^/(?P<username>{U})/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/(?P<username>{U})/.+$",
+          "kind": "content"
+        }
+      ],
+      "avatar": [
+        {
+          "type": "json",
+          "url": "https://note.com/api/v2/creators/{username}",
+          "path": "data.profileImageUrl",
+          "missing_status": [
+            404,
+            410
+          ]
+        }
+      ],
+      "expand": true,
+      "example": "info"
+    },
+    {
+      "id": "freecodecamp",
+      "name": "freeCodeCamp",
+      "hosts": "(?:www\\.)?freecodecamp\\.org",
+      "username": "[A-Za-z0-9_\\-]{3,40}",
+      "profile_url": "https://www.freecodecamp.org/{username}",
+      "display": "{username}",
+      "reserved": [
+        "about",
+        "blocked",
+        "catalog",
+        "certification",
+        "challenges",
+        "chinese",
+        "code-of-conduct",
+        "copyright-policy",
+        "donate",
+        "email-sign-up",
+        "espanol",
+        "forum",
+        "german",
+        "italian",
+        "japanese",
+        "korean",
+        "learn",
+        "news",
+        "portfolio",
+        "portuguese",
+        "privacy-policy",
+        "search",
+        "settings",
+        "shop",
+        "signin",
+        "status",
+        "support",
+        "swahili",
+        "terms-of-service",
+        "ukrainian",
+        "unsubscribe",
+        "update-email"
+      ],
+      "patterns": [
+        {
+          "path": "^/(?P<username>{U})/?$",
+          "kind": "profile"
+        }
+      ],
+      "avatar": [
+        {
+          "type": "json",
+          "url": "https://api.freecodecamp.org/users/get-public-profile?username={username}",
+          "path": "entities.user.{username}.picture",
+          "missing_status": [
+            404,
+            410
+          ]
+        }
+      ],
+      "expand": true,
+      "example": "raisedadead"
+    },
+    {
+      "id": "minds",
+      "name": "Minds",
+      "hosts": "(?:www\\.)?minds\\.com",
+      "username": "[A-Za-z0-9_]{3,50}",
+      "profile_url": "https://www.minds.com/{username}",
+      "display": "{username}",
+      "reserved": [
+        "about",
+        "analytics",
+        "api",
+        "blog",
+        "boost",
+        "branding",
+        "canary",
+        "channels",
+        "chat",
+        "composer",
+        "content-policy",
+        "discovery",
+        "explore",
+        "group",
+        "groups",
+        "help",
+        "jobs",
+        "login",
+        "media",
+        "memberships",
+        "mobile",
+        "network",
+        "newsfeed",
+        "notifications",
+        "p",
+        "plus",
+        "pro",
+        "register",
+        "search",
+        "settings",
+        "static",
+        "supermind",
+        "tokens",
+        "upgrades",
+        "valuecheck",
+        "wallet"
+      ],
+      "patterns": [
+        {
+          "path": "^/(?P<username>{U})/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/(?P<username>{U})/.+$",
+          "kind": "content"
+        }
+      ],
+      "avatar": [
+        {
+          "type": "json",
+          "url": "https://www.minds.com/api/v1/channel/{username}",
+          "path": "channel.avatar_url.large|channel.avatar_url.medium|channel.icon_url",
+          "missing_status": [
+            404,
+            410
+          ]
+        }
+      ],
+      "expand": true,
+      "example": "minds"
+    },
+    {
+      "id": "kick",
+      "name": "Kick",
+      "hosts": "(?:www\\.)?kick\\.com",
+      "username": "[A-Za-z0-9_\\-]{3,26}",
+      "profile_url": "https://kick.com/{username}",
+      "display": "{username}",
+      "reserved": [
+        "about",
+        "api",
+        "auth",
+        "browse",
+        "careers",
+        "categories",
+        "category",
+        "clips",
+        "community-guidelines",
+        "dashboard",
+        "dmca-policy",
+        "drops",
+        "following",
+        "kicks",
+        "livestreams",
+        "login",
+        "partners",
+        "popout",
+        "privacy-policy",
+        "safety",
+        "search",
+        "settings",
+        "signup",
+        "streams",
+        "subscriptions",
+        "terms-of-service",
+        "transactions",
+        "video"
+      ],
+      "patterns": [
+        {
+          "path": "^/(?P<username>{U})/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/(?P<username>{U})/(?:about|videos|clips|chatroom)/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/(?P<username>{U})/.+$",
+          "kind": "content"
+        }
+      ],
+      "avatar": [
+        {
+          "type": "json",
+          "url": "https://kick.com/api/v2/channels/{username}",
+          "path": "user.profile_pic",
+          "missing_status": [
+            404,
+            410
+          ]
+        }
+      ],
+      "expand": true,
+      "example": "xqc"
+    },
+    {
+      "id": "hackerrank",
+      "name": "HackerRank",
+      "hosts": "(?:www\\.)?hackerrank\\.com",
+      "username": "[A-Za-z0-9_]{3,40}",
+      "profile_url": "https://www.hackerrank.com/profile/{username}",
+      "display": "{username}",
+      "patterns": [
+        {
+          "path": "^/profile/(?P<username>{U})/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/profile/(?P<username>{U})/.+$",
+          "kind": "content"
+        }
+      ],
+      "avatar": [
+        {
+          "type": "json",
+          "url": "https://www.hackerrank.com/rest/contests/master/hackers/{username}/profile",
+          "path": "model.avatar",
+          "missing_status": [
+            404,
+            410
+          ]
+        }
+      ],
+      "expand": true,
+      "example": "shashank21j"
+    },
+    {
+      "id": "tumblr",
+      "name": "Tumblr",
+      "hosts": "(?:www\\.)?tumblr\\.com|[a-z0-9][a-z0-9-]*\\.tumblr\\.com",
+      "username": "[A-Za-z0-9][A-Za-z0-9\\-]{0,31}",
+      "profile_url": "https://{username}.tumblr.com/",
+      "display": "{username}",
+      "reserved": [
+        "about",
+        "abuse",
+        "apps",
+        "blog",
+        "communities",
+        "dashboard",
+        "developers",
+        "docs",
+        "domains",
+        "explore",
+        "following",
+        "help",
+        "inbox",
+        "jobs",
+        "likes",
+        "live",
+        "login",
+        "logout",
+        "new",
+        "oauth",
+        "patio",
+        "policy",
+        "posts",
+        "premium",
+        "privacy",
+        "radar",
+        "reblog",
+        "register",
+        "safe-mode",
+        "search",
+        "settings",
+        "share",
+        "support",
+        "tagged",
+        "tags",
+        "themes",
+        "tips",
+        "topics",
+        "tumblrmart",
+        "widgets"
+      ],
+      "patterns": [
+        {
+          "path": "^/?$",
+          "kind": "profile",
+          "host": "^(?P<username>(?!(?:www|api|assets|static|media|at|vt|va|px|a|sp|secure|embed|www2|\\d+)\\.)[a-z0-9][a-z0-9-]{0,31})\\.tumblr\\.com$"
+        },
+        {
+          "path": "^/.+$",
+          "kind": "content",
+          "host": "^(?P<username>(?!(?:www|api|assets|static|media|at|vt|va|px|a|sp|secure|embed|www2|\\d+)\\.)[a-z0-9][a-z0-9-]{0,31})\\.tumblr\\.com$"
+        },
+        {
+          "kind": "skip",
+          "host": "^(?!www\\.)[a-z0-9.-]+\\.tumblr\\.com$"
+        },
+        {
+          "path": "^/blog/(?:view/)?(?P<username>{U})/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/(?P<username>{U})/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/(?P<username>{U})/.+$",
+          "kind": "content"
+        }
+      ],
+      "avatar": [
+        {
+          "type": "image",
+          "url": "https://api.tumblr.com/v2/blog/{username}.tumblr.com/avatar/512"
+        }
+      ],
+      "expand": true,
+      "example": "staff"
+    },
+    {
+      "id": "deviantart",
+      "name": "DeviantArt",
+      "hosts": "(?:www\\.)?deviantart\\.com",
+      "username": "[A-Za-z0-9][A-Za-z0-9\\-]{2,19}",
+      "profile_url": "https://www.deviantart.com/{username}",
+      "display": "{username}",
+      "reserved": [
+        "_sisu",
+        "about",
+        "account",
+        "adoptables",
+        "art",
+        "browse",
+        "careers",
+        "comments",
+        "commissions",
+        "core",
+        "core-membership",
+        "daily-deviations",
+        "developers",
+        "deviations",
+        "download",
+        "dreamup",
+        "features",
+        "forum",
+        "groups",
+        "join",
+        "journals",
+        "morelikethis",
+        "newest",
+        "notifications",
+        "polls",
+        "popular",
+        "posts",
+        "privacy",
+        "protect",
+        "search",
+        "settings",
+        "shop",
+        "status-updates",
+        "studio",
+        "submit",
+        "tag",
+        "team",
+        "topic",
+        "tos",
+        "users",
+        "view",
+        "watch"
+      ],
+      "patterns": [
+        {
+          "path": "^/(?P<username>{U})/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/(?P<username>{U})/(?:gallery|favourites|about|posts|shop|subscriptions|badges)/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/(?P<username>{U})/.+$",
+          "kind": "content"
+        }
+      ],
+      "avatar": [
+        {
+          "type": "html",
+          "extract": [
+            "og_image"
+          ],
+          "reject": [
+            "st.deviantart.net/minish",
+            "/avatars/default"
+          ]
+        }
+      ],
+      "expand": true,
+      "example": "deviantart"
+    },
+    {
+      "id": "vimeo",
+      "name": "Vimeo",
+      "hosts": "(?:www\\.)?vimeo\\.com",
+      "username": "(?!\\d+$)[A-Za-z0-9_\\-]{3,40}",
+      "profile_url": "https://vimeo.com/{username}",
+      "display": "{username}",
+      "reserved": [
+        "about",
+        "agency",
+        "album",
+        "api",
+        "apps",
+        "blog",
+        "business",
+        "campaigns",
+        "careers",
+        "categories",
+        "channels",
+        "cookie_policy",
+        "couchmode",
+        "create",
+        "customers",
+        "dmca",
+        "enterprise",
+        "events",
+        "experts",
+        "features",
+        "for-hire",
+        "groups",
+        "guidelines",
+        "help",
+        "home",
+        "integrations",
+        "jobs",
+        "join",
+        "live",
+        "log_in",
+        "login",
+        "manage",
+        "marketers",
+        "moogaloop.swf",
+        "ondemand",
+        "ott",
+        "partners",
+        "pricing",
+        "privacy",
+        "product-updates",
+        "professionals",
+        "search",
+        "seo",
+        "settings",
+        "showcase",
+        "site_map",
+        "solutions",
+        "stock",
+        "terms",
+        "upgrade",
+        "upload",
+        "user",
+        "video",
+        "watch"
+      ],
+      "patterns": [
+        {
+          "path": "^/(?P<username>{U})/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/(?P<username>{U})/(?:videos|about|following|followers|collections|likes)/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/(?P<username>{U})/.+$",
+          "kind": "content"
+        }
+      ],
+      "avatar": [
+        {
+          "type": "html",
+          "extract": [
+            "og_image"
+          ],
+          "reject": [
+            "/portrait/default",
+            "i.vimeocdn.com/favicon",
+            "defaults-blue",
+            "vimeo.com/images/"
+          ]
+        }
+      ],
+      "expand": true,
+      "example": "staff"
+    },
+    {
+      "id": "lastfm",
+      "name": "Last.fm",
+      "hosts": "(?:www\\.)?last\\.fm|(?:www\\.)?lastfm\\.(?:de|es|fr|it|ja|pl|pt|ru|se|com\\.tr|com\\.br)",
+      "username": "[A-Za-z][A-Za-z0-9_\\-]{1,14}",
+      "profile_url": "https://www.last.fm/user/{username}",
+      "display": "{username}",
+      "patterns": [
+        {
+          "path": "^/user/(?P<username>{U})/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/user/(?P<username>{U})/.+$",
+          "kind": "content"
+        }
+      ],
+      "avatar": [
+        {
+          "type": "html",
+          "extract": [
+            "og_image"
+          ],
+          "reject": [
+            "818148bf682d429dc215c1705eb27b98",
+            "/static/images/",
+            "c6f59c1e5e7240a4c0d427abd71f3dbb"
+          ]
+        }
+      ],
+      "expand": true,
+      "example": "RJ"
+    },
+    {
+      "id": "genius",
+      "name": "Genius",
+      "hosts": "(?:www\\.)?genius\\.com",
+      "username": "(?!.*-(?:lyrics|annotated)$)[A-Za-z0-9_\\-]{2,40}",
+      "profile_url": "https://genius.com/{username}",
+      "display": "{username}",
+      "reserved": [
+        "a",
+        "about",
+        "advertise",
+        "albums",
+        "api-clients",
+        "artists",
+        "artists-index",
+        "community",
+        "contributor_guidelines",
+        "copyright",
+        "developers",
+        "discussions",
+        "embed-guide",
+        "forums",
+        "hot-songs",
+        "jobs",
+        "licensing",
+        "login",
+        "new",
+        "press",
+        "privacy_policy",
+        "search",
+        "shop",
+        "signup",
+        "social",
+        "songs",
+        "static",
+        "tags",
+        "terms",
+        "topics",
+        "users",
+        "verified-artists",
+        "videos",
+        "web-annotator"
+      ],
+      "patterns": [
+        {
+          "path": "^/(?P<username>{U})/?$",
+          "kind": "profile"
+        }
+      ],
+      "avatar": [
+        {
+          "type": "html",
+          "extract": [
+            "og_image"
+          ],
+          "reject": [
+            "default_avatar",
+            "assets.genius.com/images/"
+          ]
+        }
+      ],
+      "expand": true,
+      "example": "Genius"
+    },
+    {
+      "id": "instructables",
+      "name": "Instructables",
+      "hosts": "(?:www\\.)?instructables\\.com",
+      "username": "[A-Za-z0-9_\\-. +]{2,40}",
+      "profile_url": "https://www.instructables.com/member/{username}/",
+      "display": "{username}",
+      "patterns": [
+        {
+          "path": "^/member/(?P<username>{U})/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/member/(?P<username>{U})/.+$",
+          "kind": "content"
+        }
+      ],
+      "avatar": [
+        {
+          "type": "html",
+          "extract": [
+            "og_image"
+          ],
+          "reject": [
+            "/static/image/",
+            ".default.",
+            "instructables.com/assets/"
+          ]
+        }
+      ],
+      "expand": true,
+      "example": "instructables"
+    },
+    {
+      "id": "osu",
+      "name": "osu!",
+      "hosts": "osu\\.ppy\\.sh",
+      "username": "[A-Za-z0-9_\\-\\[\\] ]{2,20}",
+      "profile_url": "https://osu.ppy.sh/users/{username}",
+      "display": "{username}",
+      "patterns": [
+        {
+          "path": "^/(?:users|u)/(?P<username>{U})(?:/(?:osu|taiko|fruits|mania))?/?$",
+          "kind": "profile"
+        }
+      ],
+      "avatar": [
+        {
+          "type": "html",
+          "extract": [
+            "og_image"
+          ],
+          "reject": [
+            "avatar-guest",
+            "/images/layout/"
+          ]
+        }
+      ],
+      "expand": true,
+      "example": "peppy"
+    },
+    {
+      "id": "myspace",
+      "name": "Myspace",
+      "hosts": "(?:www\\.)?myspace\\.com",
+      "username": "[A-Za-z0-9_.\\-]{2,40}",
+      "profile_url": "https://myspace.com/{username}",
+      "display": "{username}",
+      "reserved": [
+        "artists",
+        "browse",
+        "charts",
+        "collections",
+        "discover",
+        "error",
+        "featured",
+        "forgotpassword",
+        "help",
+        "home",
+        "inbox",
+        "messages",
+        "mixes",
+        "music",
+        "notifications",
+        "pages",
+        "people",
+        "play",
+        "radio",
+        "search",
+        "settings",
+        "signin",
+        "signup",
+        "song",
+        "upload",
+        "video"
+      ],
+      "patterns": [
+        {
+          "path": "^/(?P<username>{U})/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/(?P<username>{U})/(?:bio|music|photos|videos|connections|mixes|events)/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/(?P<username>{U})/.+$",
+          "kind": "content"
+        }
+      ],
+      "avatar": [
+        {
+          "type": "html",
+          "extract": [
+            "og_image"
+          ],
+          "reject": [
+            "/common/images/",
+            "x.myspacecdn.com/new/common/images"
+          ]
+        }
+      ],
+      "expand": true,
+      "example": "tom"
+    },
+    {
+      "id": "plurk",
+      "name": "Plurk",
+      "hosts": "(?:www\\.)?plurk\\.com",
+      "username": "[A-Za-z0-9_]{3,30}",
+      "profile_url": "https://www.plurk.com/{username}",
+      "display": "{username}",
+      "reserved": [
+        "about",
+        "anonymous",
+        "api",
+        "apps",
+        "brand",
+        "contact",
+        "emoticons",
+        "faq",
+        "features",
+        "hashtag",
+        "help",
+        "jobs",
+        "login",
+        "logout",
+        "m",
+        "news",
+        "p",
+        "portal",
+        "premium",
+        "privacy",
+        "resetpassword",
+        "search",
+        "settings",
+        "signup",
+        "sitemap",
+        "static",
+        "t",
+        "terms",
+        "top",
+        "u",
+        "users"
+      ],
+      "patterns": [
+        {
+          "path": "^/(?P<username>{U})/?$",
+          "kind": "profile"
+        }
+      ],
+      "avatar": [
+        {
+          "type": "html",
+          "extract": [
+            "og_image"
+          ],
+          "reject": [
+            "//s.plurk.com/",
+            "/static/default"
+          ]
+        }
+      ],
+      "expand": true,
+      "example": "plurk"
+    },
+    {
+      "id": "audiomack",
+      "name": "Audiomack",
+      "hosts": "(?:www\\.)?audiomack\\.com",
+      "username": "[A-Za-z0-9_\\-.]{2,40}",
+      "profile_url": "https://audiomack.com/{username}",
+      "display": "{username}",
+      "reserved": [
+        "about",
+        "afrobeats",
+        "album",
+        "albums",
+        "amp",
+        "artists",
+        "contact-us",
+        "creators",
+        "dashboard",
+        "edit",
+        "electronic",
+        "embed",
+        "feed",
+        "forgot-password",
+        "images",
+        "instrumental",
+        "join",
+        "latin",
+        "legal",
+        "library",
+        "login",
+        "monetization",
+        "notifications",
+        "oauth",
+        "playlists",
+        "podcast",
+        "pop",
+        "premium",
+        "rap",
+        "recent",
+        "reggae",
+        "rnb",
+        "search",
+        "settings",
+        "song",
+        "songs",
+        "static",
+        "stats",
+        "supporters",
+        "top",
+        "trending-now",
+        "upload",
+        "world"
+      ],
+      "patterns": [
+        {
+          "path": "^/(?P<username>{U})/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/(?P<username>{U})/(?:songs|albums|playlists|favorites|followers|following|reups|uploads)/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/(?P<username>{U})/.+$",
+          "kind": "content"
+        }
+      ],
+      "avatar": [
+        {
+          "type": "html",
+          "extract": [
+            "og_image"
+          ],
+          "reject": [
+            "audiomack.com/images/",
+            "/default-artist-image",
+            "default-avatar"
+          ]
+        }
+      ],
+      "expand": true,
+      "example": "audiomack"
+    },
+    {
+      "id": "wordpressorg",
+      "name": "WordPress.org",
+      "hosts": "profiles\\.wordpress\\.org",
+      "username": "[A-Za-z0-9_.\\-]{1,60}",
+      "profile_url": "https://profiles.wordpress.org/{username}/",
+      "display": "{username}",
+      "reserved": [
+        "associations",
+        "favicon.ico",
+        "wp-admin",
+        "wp-content",
+        "wp-includes",
+        "wp-json",
+        "wp-login.php"
+      ],
+      "patterns": [
+        {
+          "path": "^/(?P<username>{U})/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/(?P<username>{U})/.+$",
+          "kind": "content"
+        }
+      ],
+      "avatar": [
+        {
+          "type": "html",
+          "extract": [
+            "og_image"
+          ]
+        }
+      ],
+      "expand": true,
+      "example": "matt"
+    },
+    {
+      "id": "liberapay",
+      "name": "Liberapay",
+      "hosts": "(?:www\\.|[a-z]{2}\\.)?liberapay\\.com",
+      "username": "[A-Za-z0-9_\\-.~]{1,32}",
+      "profile_url": "https://liberapay.com/{username}",
+      "display": "{username}",
+      "reserved": [
+        "about",
+        "api",
+        "assets",
+        "callbacks",
+        "donate",
+        "elsewhere",
+        "explore",
+        "favicon.ico",
+        "feedback",
+        "for",
+        "giving",
+        "individuals",
+        "invoice",
+        "legal",
+        "log-in",
+        "migrate",
+        "on",
+        "organizations",
+        "paydays",
+        "payment-providers",
+        "pledges",
+        "privacy",
+        "recipients",
+        "repositories",
+        "robots.txt",
+        "search",
+        "security.txt",
+        "sign-in",
+        "sign-out",
+        "sign-up",
+        "stats",
+        "teams",
+        "~"
+      ],
+      "patterns": [
+        {
+          "path": "^/(?P<username>{U})/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/(?P<username>{U})/(?:donate|income|giving|receiving)/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/(?P<username>{U})/.+$",
+          "kind": "content"
+        }
+      ],
+      "avatar": [
+        {
+          "type": "html",
+          "extract": [
+            "og_image"
+          ],
+          "reject": [
+            "liberapay.com/assets/"
+          ]
+        }
+      ],
+      "expand": true,
+      "example": "liberapay"
+    },
+    {
+      "id": "allmylinks",
+      "name": "AllMyLinks",
+      "hosts": "(?:www\\.)?allmylinks\\.com",
+      "username": "[A-Za-z0-9_\\-.]{3,40}",
+      "profile_url": "https://allmylinks.com/{username}",
+      "display": "{username}",
+      "reserved": [
+        "about",
+        "api",
+        "auth",
+        "blog",
+        "contact",
+        "dashboard",
+        "explore",
+        "faq",
+        "help",
+        "img",
+        "link",
+        "login",
+        "pricing",
+        "privacy",
+        "register",
+        "search",
+        "settings",
+        "signup",
+        "site",
+        "terms"
+      ],
+      "patterns": [
+        {
+          "path": "^/(?P<username>{U})/?$",
+          "kind": "profile"
+        }
+      ],
+      "avatar": [
+        {
+          "type": "html",
+          "extract": [
+            "og_image"
+          ],
+          "reject": [
+            "allmylinks.com/img/",
+            "/images/logo",
+            "cdn.allmylinks.com/prod/Static"
+          ]
+        }
+      ],
+      "expand": true,
+      "example": "allmylinks"
+    },
+    {
+      "id": "patreon",
+      "name": "Patreon",
+      "hosts": "(?:www\\.)?patreon\\.com",
+      "username": "[A-Za-z0-9_\\-]{2,64}",
+      "profile_url": "https://www.patreon.com/{username}",
+      "display": "{username}",
+      "reserved": [
+        "about",
+        "api",
+        "apps",
+        "bePatron",
+        "c",
+        "careers",
+        "checkout",
+        "collection",
+        "create",
+        "creators",
+        "cw",
+        "explore",
+        "file",
+        "home",
+        "join",
+        "legal",
+        "login",
+        "m",
+        "messages",
+        "notifications",
+        "pledges",
+        "policy",
+        "portal",
+        "posts",
+        "press",
+        "pricing",
+        "product",
+        "search",
+        "settings",
+        "signup",
+        "user"
+      ],
+      "patterns": [
+        {
+          "path": "^/(?:c/|cw/)?(?P<username>{U})/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/(?:c/|cw/)?(?P<username>{U})/(?:posts|about|membership|collections|shop|home|chats|recommendations)/?$",
+          "kind": "profile"
+        }
+      ],
+      "avatar": [
+        {
+          "type": "html",
+          "extract": [
+            "og_image"
+          ],
+          "reject": [
+            "c5.patreon.com/external/"
+          ]
+        }
+      ],
+      "avatar_note": "This site sits behind bot protection or does not expose the profile picture in page metadata, so results are usually UNVERIFIED.",
+      "expand": false,
+      "example": "patreon"
+    },
+    {
+      "id": "behance",
+      "name": "Behance",
+      "hosts": "(?:www\\.)?behance\\.net",
+      "username": "[A-Za-z0-9_\\-]{3,60}",
+      "profile_url": "https://www.behance.net/{username}",
+      "display": "{username}",
+      "reserved": [
+        "about",
+        "apps",
+        "assets",
+        "blog",
+        "careers",
+        "collection",
+        "curated",
+        "for_you",
+        "freelance",
+        "galleries",
+        "gallery",
+        "hire",
+        "joblist",
+        "live",
+        "login",
+        "misc",
+        "moodboard",
+        "notifications",
+        "onboarding",
+        "portfolio",
+        "pro",
+        "search",
+        "signup",
+        "subscriptions",
+        "v2",
+        "videos"
+      ],
+      "patterns": [
+        {
+          "path": "^/(?P<username>{U})/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/(?P<username>{U})/(?:appreciated|moodboards|collections|drafts|resume|info|projects|livestreams|services)/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/(?P<username>{U})/.+$",
+          "kind": "content"
+        }
+      ],
+      "avatar": [
+        {
+          "type": "html",
+          "extract": [
+            "og_image"
+          ],
+          "reject": [
+            "a5.behance.net",
+            "/img/site/"
+          ]
+        }
+      ],
+      "avatar_note": "This site sits behind bot protection or does not expose the profile picture in page metadata, so results are usually UNVERIFIED.",
+      "expand": false,
+      "example": "behance"
+    },
+    {
+      "id": "dribbble",
+      "name": "Dribbble",
+      "hosts": "(?:www\\.)?dribbble\\.com",
+      "username": "[A-Za-z0-9_\\-]{2,40}",
+      "profile_url": "https://dribbble.com/{username}",
+      "display": "{username}",
+      "reserved": [
+        "about",
+        "account",
+        "advertise",
+        "api",
+        "attachments",
+        "auth",
+        "browse",
+        "careers",
+        "collections",
+        "colors",
+        "contact",
+        "designers",
+        "discover",
+        "following",
+        "freelance-jobs",
+        "goods",
+        "hiring",
+        "inspiration",
+        "integrations",
+        "jobs",
+        "learn",
+        "likes",
+        "lists",
+        "marketplace",
+        "places",
+        "popular",
+        "press",
+        "pricing",
+        "privacy",
+        "pro",
+        "recent",
+        "resources",
+        "search",
+        "services",
+        "session",
+        "shots",
+        "signup",
+        "stories",
+        "tags",
+        "talent",
+        "teams",
+        "terms",
+        "testimonials",
+        "uploads",
+        "users",
+        "watching"
+      ],
+      "patterns": [
+        {
+          "path": "^/(?P<username>{U})/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/(?P<username>{U})/(?:about|shots|collections|likes|boosted-shots|members|services|teams|goods|projects|buckets|tags|followers|following)/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/(?P<username>{U})/.+$",
+          "kind": "content"
+        }
+      ],
+      "avatar": [],
+      "avatar_note": "Dribbble's og:image is a shot, not the avatar, and the page offers no machine-readable avatar, so results are UNVERIFIED.",
+      "expand": false,
+      "example": "dribbble"
+    },
+    {
+      "id": "flickr",
+      "name": "Flickr",
+      "hosts": "(?:www\\.|m\\.)?flickr\\.com",
+      "username": "[A-Za-z0-9@_\\-]{2,50}",
+      "profile_url": "https://www.flickr.com/people/{username}/",
+      "display": "{username}",
+      "case_sensitive": true,
+      "reserved": [
+        "explore",
+        "me",
+        "search",
+        "tags",
+        "us"
+      ],
+      "patterns": [
+        {
+          "path": "^/people/(?P<username>{U})/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/photos/(?P<username>{U})/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/photos/(?P<username>{U})/(?:albums|galleries|favorites|groups|stats|map|tags)(?:/.*)?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/photos/(?P<username>{U})/\\d+(?:/.*)?$",
+          "kind": "content"
+        }
+      ],
+      "avatar": [
+        {
+          "type": "html",
+          "extract": [
+            "og_image",
+            "ld_json"
+          ],
+          "reject": [
+            "combo.staticflickr.com",
+            "buddyicon.gif",
+            "/images/opensearch"
+          ]
+        }
+      ],
+      "avatar_note": "This site sits behind bot protection or does not expose the profile picture in page metadata, so results are usually UNVERIFIED.",
+      "expand": false,
+      "example": "flickr"
+    },
+    {
+      "id": "letterboxd",
+      "name": "Letterboxd",
+      "hosts": "(?:www\\.)?letterboxd\\.com",
+      "username": "[A-Za-z0-9_]{2,15}",
+      "profile_url": "https://letterboxd.com/{username}/",
+      "display": "{username}",
+      "reserved": [
+        "about",
+        "activity",
+        "actor",
+        "api-beta",
+        "apps",
+        "contact",
+        "create-account",
+        "crew",
+        "csi",
+        "director",
+        "film",
+        "films",
+        "gift-guide",
+        "hq",
+        "imdb",
+        "journal",
+        "legal",
+        "list",
+        "lists",
+        "members",
+        "merch",
+        "news",
+        "patron",
+        "people",
+        "podcast",
+        "pro",
+        "reviews",
+        "s",
+        "search",
+        "settings",
+        "showdown",
+        "sign-in",
+        "story",
+        "studio",
+        "tag",
+        "tmdb",
+        "user",
+        "videostore",
+        "welcome",
+        "year-in-review"
+      ],
+      "patterns": [
+        {
+          "path": "^/(?P<username>{U})/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/(?P<username>{U})/(?:films|diary|reviews|watchlist|lists|likes|tags|network|following|followers|stats|activity)/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/(?P<username>{U})/.+$",
+          "kind": "content"
+        }
+      ],
+      "avatar": [
+        {
+          "type": "html",
+          "extract": [
+            "og_image"
+          ],
+          "reject": [
+            "s.ltrbxd.com/static/img/avatar",
+            "/static/img/"
+          ]
+        }
+      ],
+      "avatar_note": "This site sits behind bot protection or does not expose the profile picture in page metadata, so results are usually UNVERIFIED.",
+      "expand": false,
+      "example": "dave"
+    },
+    {
+      "id": "kofi",
+      "name": "Ko-fi",
+      "hosts": "(?:www\\.)?ko-fi\\.com",
+      "username": "[A-Za-z0-9_]{3,40}",
+      "profile_url": "https://ko-fi.com/{username}",
+      "display": "{username}",
+      "reserved": [
+        "about",
+        "account",
+        "api",
+        "art",
+        "blog",
+        "c",
+        "careers",
+        "commissions",
+        "discord",
+        "explore",
+        "faq",
+        "features",
+        "feed",
+        "gold",
+        "home",
+        "i",
+        "img",
+        "login",
+        "manage",
+        "memberships",
+        "post",
+        "pricing",
+        "privacy",
+        "s",
+        "search",
+        "settings",
+        "shop",
+        "signup",
+        "streamalerts",
+        "summary",
+        "terms"
+      ],
+      "patterns": [
+        {
+          "path": "^/(?P<username>{U})/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/(?P<username>{U})/(?:shop|gallery|posts|commissions|tiers|goal|about)/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/(?P<username>{U})/.+$",
+          "kind": "content"
+        }
+      ],
+      "avatar": [
+        {
+          "type": "html",
+          "extract": [
+            "og_image"
+          ],
+          "reject": [
+            "/img/",
+            "ko-fi.com/img"
+          ]
+        }
+      ],
+      "avatar_note": "This site sits behind bot protection or does not expose the profile picture in page metadata, so results are usually UNVERIFIED.",
+      "expand": false,
+      "example": "kofi"
+    },
+    {
+      "id": "buymeacoffee",
+      "name": "Buy Me a Coffee",
+      "hosts": "(?:www\\.)?buymeacoffee\\.com",
+      "username": "[A-Za-z0-9_.\\-]{2,40}",
+      "profile_url": "https://buymeacoffee.com/{username}",
+      "display": "{username}",
+      "reserved": [
+        "about",
+        "account",
+        "api",
+        "assets",
+        "blog",
+        "brand",
+        "button-api",
+        "careers",
+        "commissions",
+        "dashboard",
+        "discover",
+        "explore",
+        "extras",
+        "faq",
+        "features",
+        "feed",
+        "glimpse",
+        "guidelines",
+        "home",
+        "login",
+        "membership",
+        "onboarding",
+        "press",
+        "pricing",
+        "privacy-policy",
+        "resources",
+        "search",
+        "settings",
+        "signup",
+        "supporters",
+        "terms",
+        "uploads",
+        "widget",
+        "wishlist"
+      ],
+      "patterns": [
+        {
+          "path": "^/(?P<username>{U})/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/(?P<username>{U})/(?:posts|membership|extras|gallery|wishlist|commissions|about|e|p)/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/(?P<username>{U})/.+$",
+          "kind": "content"
+        }
+      ],
+      "avatar": [
+        {
+          "type": "html",
+          "extract": [
+            "og_image"
+          ],
+          "reject": [
+            "cdn.buymeacoffee.com/assets",
+            "/assets/img"
+          ]
+        }
+      ],
+      "avatar_note": "This site sits behind bot protection or does not expose the profile picture in page metadata, so results are usually UNVERIFIED.",
+      "expand": false,
+      "example": "buymeacoffee"
+    },
+    {
+      "id": "substack",
+      "name": "Substack",
+      "hosts": "(?:www\\.)?substack\\.com|[a-z0-9-]+\\.substack\\.com",
+      "username": "[A-Za-z0-9][A-Za-z0-9\\-_]{1,60}",
+      "profile_url": "https://substack.com/@{username}",
+      "display": "@{username}",
+      "patterns": [
+        {
+          "path": "^/(?:about|archive)?/?$",
+          "kind": "profile",
+          "host": "^(?P<username>(?!(?:www|open|on|support|substackcdn|cdn|api|email|reader|newsletters|blog|read|writes|your)\\.)[a-z0-9][a-z0-9-]{1,60})\\.substack\\.com$",
+          "namespace": "publication",
+          "profile_url": "https://{username}.substack.com/",
+          "display": "{username}.substack.com"
+        },
+        {
+          "path": "^/.+$",
+          "kind": "content",
+          "host": "^(?P<username>(?!(?:www|open|on|support|substackcdn|cdn|api|email|reader|newsletters|blog|read|writes|your)\\.)[a-z0-9][a-z0-9-]{1,60})\\.substack\\.com$",
+          "namespace": "publication",
+          "profile_url": "https://{username}.substack.com/",
+          "display": "{username}.substack.com"
+        },
+        {
+          "kind": "skip",
+          "host": "^(?!www\\.)[a-z0-9-]+\\.substack\\.com$"
+        },
+        {
+          "path": "^/@(?P<username>{U})/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/@(?P<username>{U})/(?:posts|notes|likes|reads|subscribers|activity)/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/@(?P<username>{U})/.+$",
+          "kind": "content"
+        },
+        {
+          "path": "^/profile/\\d+-(?P<username>{U})/?$",
+          "kind": "profile"
+        }
+      ],
+      "avatar": [
+        {
+          "type": "html",
+          "extract": [
+            "ld_json"
+          ],
+          "reject": [
+            "/img/substack",
+            "default-light"
+          ]
+        }
+      ],
+      "avatar_note": "Substack's og:image is a generated share card, so the avatar is read from the schema.org Person data on substack.com/@name pages; publication subdomains are UNVERIFIED.",
+      "expand": false,
+      "example": "hamish"
+    },
+    {
+      "id": "codepen",
+      "name": "CodePen",
+      "hosts": "(?:www\\.)?codepen\\.io",
+      "username": "[A-Za-z0-9_\\-]{2,40}",
+      "profile_url": "https://codepen.io/{username}",
+      "display": "{username}",
+      "reserved": [
+        "2.0",
+        "about",
+        "accounts",
+        "api",
+        "challenges",
+        "collection",
+        "collections",
+        "dashboard",
+        "editor",
+        "embeds",
+        "features",
+        "following",
+        "hello",
+        "jobs",
+        "legal",
+        "login",
+        "pen",
+        "pens",
+        "picks",
+        "popular",
+        "posts",
+        "privacy",
+        "pro",
+        "projects",
+        "resources",
+        "search",
+        "session",
+        "settings",
+        "signup",
+        "spark",
+        "support",
+        "tag",
+        "tags",
+        "team",
+        "teams",
+        "topics",
+        "trending",
+        "write",
+        "your-work"
+      ],
+      "patterns": [
+        {
+          "path": "^/(?P<username>{U})/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/(?P<username>{U})/(?:pens|projects|posts|collections|popular|public|loved|forked|followers|following|details|full|live|about)/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/(?P<username>{U})/.+$",
+          "kind": "content"
+        }
+      ],
+      "avatar": [
+        {
+          "type": "html",
+          "extract": [
+            "og_image"
+          ],
+          "reject": [
+            "cpwebassets.codepen.io",
+            "/logo-"
+          ]
+        }
+      ],
+      "avatar_note": "This site sits behind bot protection or does not expose the profile picture in page metadata, so results are usually UNVERIFIED.",
+      "expand": false,
+      "example": "chriscoyier"
+    },
+    {
+      "id": "kaggle",
+      "name": "Kaggle",
+      "hosts": "(?:www\\.)?kaggle\\.com",
+      "username": "[A-Za-z0-9][A-Za-z0-9\\-]{2,49}",
+      "profile_url": "https://www.kaggle.com/{username}",
+      "display": "{username}",
+      "reserved": [
+        "account",
+        "benchmarks",
+        "blog",
+        "c",
+        "code",
+        "competitions",
+        "contact",
+        "cookies",
+        "d",
+        "datasets",
+        "discussion",
+        "discussions",
+        "docs",
+        "game-arena",
+        "general",
+        "getting-started",
+        "host",
+        "kernels",
+        "learn",
+        "learn-guide",
+        "me",
+        "models",
+        "notifications",
+        "organizations",
+        "page",
+        "privacy",
+        "product-feedback",
+        "progression",
+        "questions-and-answers",
+        "rankings",
+        "search",
+        "settings",
+        "solutions",
+        "static",
+        "team",
+        "terms",
+        "u",
+        "work",
+        "writeups"
+      ],
+      "patterns": [
+        {
+          "path": "^/(?P<username>{U})/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/(?P<username>{U})/(?:code|datasets|models|discussion|competitions|followers|following|writeups|account|activity)/?$",
+          "kind": "profile"
+        },
+        {
+          "path": "^/(?P<username>{U})/.+$",
+          "kind": "content"
+        }
+      ],
+      "avatar": [
+        {
+          "type": "html",
+          "extract": [
+            "og_image"
+          ],
+          "reject": [
+            "kaggle.com/static/images",
+            "/site-logo",
+            "default-thumb"
+          ]
+        }
+      ],
+      "avatar_note": "This site sits behind bot protection or does not expose the profile picture in page metadata, so results are usually UNVERIFIED.",
+      "expand": false,
+      "example": "kaggle"
+    }
+  ],
+  "mirrors": [
+    {
+      "host": "(?:www\\.)?picuki\\.com",
+      "path": "^/profile/(?P<username>[A-Za-z0-9._]{1,30})/?$",
+      "platform": "instagram"
+    },
+    {
+      "host": "(?:www\\.)?pixwox\\.com",
+      "path": "^/profile/(?P<username>[A-Za-z0-9._]{1,30})/?$",
+      "platform": "instagram"
+    },
+    {
+      "host": "(?:www\\.)?imginn\\.com",
+      "path": "^/(?P<username>[A-Za-z0-9._]{1,30})/?$",
+      "platform": "instagram"
+    },
+    {
+      "host": "(?:www\\.)?(?:dumpor|dumpoir)\\.com",
+      "path": "^/v/(?P<username>[A-Za-z0-9._]{1,30})/?$",
+      "platform": "instagram"
+    },
+    {
+      "host": "(?:www\\.)?greatfon\\.com",
+      "path": "^/v/(?P<username>[A-Za-z0-9._]{1,30})/?$",
+      "platform": "instagram"
+    },
+    {
+      "host": "(?:www\\.)?socialblade\\.com",
+      "path": "^/instagram/user/(?P<username>[A-Za-z0-9._]{1,30})(?:/.*)?$",
+      "platform": "instagram"
+    },
+    {
+      "host": "(?:www\\.)?socialblade\\.com",
+      "path": "^/twitter/user/(?P<username>[A-Za-z0-9_]{1,15})(?:/.*)?$",
+      "platform": "x"
+    },
+    {
+      "host": "(?:www\\.)?socialblade\\.com",
+      "path": "^/tiktok/user/(?P<username>[A-Za-z0-9._]{2,24})(?:/.*)?$",
+      "platform": "tiktok"
+    },
+    {
+      "host": "(?:www\\.)?socialblade\\.com",
+      "path": "^/twitch/user/(?P<username>[A-Za-z0-9_]{3,25})(?:/.*)?$",
+      "platform": "twitch"
+    },
+    {
+      "host": "(?:www\\.)?socialblade\\.com",
+      "path": "^/youtube/handle/@?(?P<username>[\\w.\\-·]{3,30})(?:/.*)?$",
+      "platform": "youtube"
+    },
+    {
+      "host": "(?:www\\.)?socialblade\\.com",
+      "path": "^/youtube/channel/(?P<username>UC[A-Za-z0-9_-]{22})(?:/.*)?$",
+      "platform": "youtube",
+      "namespace": "channel"
+    },
+    {
+      "host": "(?:www\\.)?(?:nitter\\.net|nitter\\.poast\\.org|nitter\\.privacydev\\.net|xcancel\\.com|twstalker\\.com|sotwe\\.com|fxtwitter\\.com|vxtwitter\\.com|fixupx\\.com|fixvx\\.com)",
+      "path": "^/(?P<username>[A-Za-z0-9_]{1,15})/?$",
+      "platform": "x"
+    },
+    {
+      "host": "(?:www\\.)?(?:nitter\\.net|nitter\\.poast\\.org|nitter\\.privacydev\\.net|xcancel\\.com|twstalker\\.com|sotwe\\.com|fxtwitter\\.com|vxtwitter\\.com|fixupx\\.com|fixvx\\.com)",
+      "path": "^/(?P<username>[A-Za-z0-9_]{1,15})/status/\\d+(?:/.*)?$",
+      "platform": "x",
+      "kind": "content"
+    },
+    {
+      "host": "(?:www\\.)?urlebird\\.com",
+      "path": "^/user/(?P<username>[A-Za-z0-9._]{2,24})/?$",
+      "platform": "tiktok"
+    },
+    {
+      "host": "(?:[a-z]{2,3}\\.)?tgstat\\.(?:com|ru)",
+      "path": "^/channel/@(?P<username>[A-Za-z][A-Za-z0-9_]{3,31})(?:/.*)?$",
+      "platform": "telegram"
+    },
+    {
+      "host": "(?:www\\.)?twitchtracker\\.com",
+      "path": "^/(?P<username>[A-Za-z0-9_]{3,25})(?:/(?:streams|games|subscribers|statistics|clips))?/?$",
+      "platform": "twitch"
+    },
+    {
+      "host": "(?:www\\.)?sullygnome\\.com",
+      "path": "^/channel/(?P<username>[A-Za-z0-9_]{3,25})(?:/.*)?$",
+      "platform": "twitch"
+    }
+  ],
+  "cdn": [
+    {
+      "host": "avatars\\d*\\.githubusercontent\\.com",
+      "path": "^/u/(?P<id>\\d{1,12})$",
+      "resolver": "github_user_id"
+    },
+    {
+      "host": "avatars\\d*\\.githubusercontent\\.com",
+      "path": "^/(?P<username>(?!u$)[A-Za-z0-9](?:[A-Za-z0-9-]{0,37}[A-Za-z0-9])?)$",
+      "platform": "github"
+    },
+    {
+      "host": "cdn\\.bsky\\.app",
+      "path": "^/img/avatar(?:_thumbnail)?/plain/(?P<username>did:plc:[a-z2-7]{24})/",
+      "platform": "bluesky"
+    },
+    {
+      "host": "files\\.mastodon\\.social",
+      "path": "^/accounts/avatars/(?P<id>(?:\\d{3}/){2,6})(?:original|static)/",
+      "resolver": "mastodon_account_id",
+      "instance": "mastodon.social"
+    },
+    {
+      "host": "[a-z0-9.-]+",
+      "path": "^/system/accounts/avatars/(?P<id>(?:\\d{3}/){2,6})(?:original|static)/",
+      "resolver": "mastodon_account_id"
+    },
+    {
+      "host": "(?:[a-z0-9]+\\.)?gravatar\\.com",
+      "path": "^/avatar/(?P<id>[0-9a-f]{64})(?:\\.[a-z]{3,4})?$",
+      "resolver": "gravatar_hash"
+    }
+  ]
+}
