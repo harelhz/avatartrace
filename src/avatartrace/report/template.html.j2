@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data:; style-src 'unsafe-inline'">
+<title>avatartrace report</title>
+<style>
+  :root {
+    --bg: #f6f7f9; --panel: #ffffff; --ink: #1b1f24; --muted: #5d6673; --line: #dfe3e8;
+    --exact: #0b6b3a; --near: #1f6f8b; --face: #6a4bb3; --weak: #96650a; --unv: #5d6673; --warn-bg: #fff6dc;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #14171b; --panel: #1d2127; --ink: #e7eaee; --muted: #9aa4b1; --line: #313842;
+      --exact: #5fd399; --near: #6cc4e0; --face: #b9a3f2; --weak: #e6b450; --unv: #9aa4b1; --warn-bg: #3a3114;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+         font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 1040px; margin: 0 auto; padding: 24px 16px 56px; }
+  h1 { font-size: 22px; margin: 0 0 4px; }
+  h2 { font-size: 17px; margin: 32px 0 10px; }
+  p { margin: 6px 0; }
+  a { color: inherit; }
+  .muted { color: var(--muted); }
+  .notice { background: var(--warn-bg); border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px; margin: 16px 0; }
+  .query { display: flex; gap: 16px; align-items: center; background: var(--panel); border: 1px solid var(--line);
+           border-radius: 10px; padding: 14px; margin-top: 16px; }
+  .query img, .pair img { border-radius: 8px; object-fit: cover; background: var(--line); }
+  .query img { width: 96px; height: 96px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px;
+          margin: 10px 0; display: grid; grid-template-columns: auto 1fr auto; gap: 16px; align-items: center; }
+  .pair { display: flex; gap: 8px; align-items: center; }
+  .pair img { width: 84px; height: 84px; }
+  .pair span { color: var(--muted); font-size: 18px; }
+  .who { min-width: 0; overflow-wrap: anywhere; }
+  .who .name { font-weight: 600; font-size: 16px; }
+  .score { text-align: right; white-space: nowrap; }
+  .score .pct { font-size: 24px; font-weight: 650; font-variant-numeric: tabular-nums; }
+  .badge { display: inline-block; font-size: 12px; font-weight: 650; letter-spacing: .03em; padding: 2px 8px;
+           border-radius: 999px; border: 1px solid currentColor; }
+  .l-EXACT { color: var(--exact); } .l-NEAR-DUPLICATE { color: var(--near); }
+  .l-LIKELY-SAME-FACE { color: var(--face); } .l-WEAK { color: var(--weak); } .l-UNVERIFIED { color: var(--unv); }
+  table { width: 100%; border-collapse: collapse; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+  th, td { text-align: left; padding: 8px 10px; border-top: 1px solid var(--line); vertical-align: top; overflow-wrap: anywhere; }
+  th { border-top: 0; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+  ul { margin: 6px 0; padding-left: 20px; }
+  footer { margin-top: 40px; font-size: 13px; color: var(--muted); }
+  @media (max-width: 640px) { .card { grid-template-columns: 1fr; } .score { text-align: left; } }
+</style>
+</head>
+<body>
+<main>
+  <h1>avatartrace report</h1>
+  <p class="muted">Scan finished {{ report.finished_at }} · minimum confidence {{ "%.0f"|format(report.min_confidence) }}%
+     · face matching: {{ report.engines.get("face", "off") }} · CLIP: {{ report.engines.get("clip", "off") }}</p>
+
+  <div class="notice">
+    <strong>Leads, not proof.</strong> A matching profile picture does not prove who runs an account: pictures get
+    copied, stolen and reused, and look-alikes exist. Verify independently before acting on anything here.
+  </div>
+
+  <div class="query">
+    <img src="{{ report.query_thumb }}" alt="The uploaded photo">
+    <div class="who">
+      <div class="name">Uploaded photo</div>
+      <div class="muted">{{ report.query_source }}</div>
+      <div class="muted">{{ report.query_width }}×{{ report.query_height }} px
+        {%- if report.query_faces is not none %} · {{ report.query_faces }} face(s) detected{% endif %}</div>
+    </div>
+  </div>
+
+  <h2>Matches ({{ matches|length }})</h2>
+  {% if not matches %}
+    <p class="muted">No account's profile picture matched at {{ "%.0f"|format(report.min_confidence) }}% confidence or above.</p>
+  {% endif %}
+  {% for r in matches %}
+  <div class="card">
+    <div class="pair">
+      <img src="{{ report.query_thumb }}" alt="Uploaded photo">
+      <span>↔</span>
+      {% if r.avatar_thumb %}<img src="{{ r.avatar_thumb }}" alt="Profile picture of {{ r.account.display }}">{% endif %}
+    </div>
+    <div class="who">
+      <div class="name">{{ r.account.platform_name }} · {{ r.account.display }}</div>
+      <div>{% if r.account.profile_url|safe_url %}<a href="{{ r.account.profile_url|safe_url }}" rel="noopener noreferrer nofollow" referrerpolicy="no-referrer">{{ r.account.profile_url }}</a>{% endif %}</div>
+      <div class="muted">Found via {{ r.found_via|join(", ") }}{% if r.method %} · decided by {{ r.method }}{% endif %}</div>
+      <div class="muted">
+        {%- if r.details.get("hash_distance") is not none %}hash distance {{ r.details.get("hash_distance") }} bits{% endif %}
+        {%- if r.details.get("face_similarity") is not none %} · face similarity {{ r.details.get("face_similarity") }}{% endif %}
+        {%- if r.details.get("clip_similarity") is not none %} · CLIP similarity {{ r.details.get("clip_similarity") }}{% endif %}
+      </div>
+    </div>
+    <div class="score">
+      <div class="pct">{{ confidence_text(r) }}</div>
+      <span class="badge l-{{ r.label.value|replace(' ', '-') }}">{{ r.label.value }}</span>
+    </div>
+  </div>
+  {% endfor %}
+  {% if hidden %}
+    <p class="muted">{{ hidden }} weaker result(s) fell below the minimum confidence and are not shown.</p>
+  {% endif %}
+
+  {% if unverified %}
+  <h2>Unverified ({{ unverified|length }})</h2>
+  <p class="muted">These accounts were returned by a search provider, but their current profile picture could not be
+     fetched without logging in, so no comparison was made and no score exists.</p>
+  <table>
+    <tr><th>Platform</th><th>Username</th><th>Profile URL</th><th>Found via</th><th>Why unverified</th></tr>
+    {% for r in unverified %}
+    <tr>
+      <td>{{ r.account.platform_name }}</td>
+      <td>{{ r.account.display }}</td>
+      <td>{% if r.account.profile_url|safe_url %}<a href="{{ r.account.profile_url|safe_url }}" rel="noopener noreferrer nofollow" referrerpolicy="no-referrer">{{ r.account.profile_url }}</a>{% endif %}</td>
+      <td>{{ r.found_via|join(", ") }}</td>
+      <td>{{ r.reason or "" }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% endif %}
+
+  {% if report.providers %}
+  <h2>Search providers</h2>
+  <table>
+    <tr><th>Provider</th><th>Status</th><th>URLs returned</th><th>Note</th></tr>
+    {% for p in report.providers %}
+    <tr><td>{{ p.name }}</td><td>{{ p.status }}</td><td>{{ p.hits }}</td><td>{{ p.message or "" }}</td></tr>
+    {% endfor %}
+  </table>
+  {% endif %}
+
+  {% if report.manual_links %}
+  <h2>Search by hand</h2>
+  <p class="muted">Opening these sends the photo (or its URL) to that search engine.</p>
+  <ul>
+    {% for name, url in report.manual_links %}
+    <li><a href="{{ url|safe_url }}" rel="noopener noreferrer nofollow" referrerpolicy="no-referrer">{{ name }}</a></li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+
+  {% if report.warnings %}
+  <h2>Notes</h2>
+  <ul>{% for w in report.warnings %}<li>{{ w }}</li>{% endfor %}</ul>
+  {% endif %}
+
+  <footer>
+    Generated by <a href="{{ repo_url|safe_url }}" rel="noopener noreferrer">avatartrace</a> {{ version }}.
+    Public data only; no logins were used. This file is self-contained and loads nothing from the network.
+  </footer>
+</main>
+</body>
+</html>
